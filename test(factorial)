@@ -1,0 +1,49 @@
+<PROGRAM>
+	<VARDECLARATION>
+		<VAR = a> <TYPE> INT </TYPE> </VAR>
+	</VARDECLARATION>
+	<FUNC name = factorial>
+		<VARDECLARATION>
+			<VAR = b> <TYPE> INT </TYPE> </VAR>
+		</VARDECLARATION>
+		<SWITCH>
+			<CONDITION>
+				<CHECK> <NOT> <EQ> <VAR name = a /VAR> 0 </EQ> </NOT> </CHECK>
+				<DO>
+					<ASSIGN> 
+						<VALUE> <VAR name = a /VAR> </VALUE> 
+						<TO> <VAR name = b /VAR> </TO>
+					</ASSIGN>
+					<ASSIGN> 
+						<VALUE> <SUB> <VAR name = a /VAR> 1 </SUB> </VALUE> 
+						<TO> <VAR name = a /VAR> </TO>
+					</ASSIGN>
+					<CALL> factorial </CALL>
+					<ASSIGN> 
+						<VALUE>
+							<MUL> <VAR name = b /VAR> <VAR name = a /VAR> </MUL> 
+						</VALUE> 
+						<TO> <VAR name = a /VAR> </TO>
+					</ASSIGN>
+				</DO>	
+			</CONDITION>
+			<CONDITION>
+				<CHECK> <EQ> <VAR name = a /VAR> 0 </EQ> </CHECK>
+					<DO>
+						<ASSIGN> 
+							<VALUE> 1 </VALUE> 
+							<TO> <VAR name = a /VAR> </TO>
+						</ASSIGN>
+					</DO>
+			</CONDITION>
+		</SWITCH>
+	</FUNC>
+	<FUNC name = main>
+		<ASSIGN> 
+			<VALUE> 5 </VALUE> 
+			<TO> <VAR name = a /VAR> </TO>
+		</ASSIGN>
+		<CALL> factorial </CALL>
+	</FUNC>
+</PROGRAM>
+	

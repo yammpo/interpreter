@@ -1,0 +1,100 @@
+<PROGRAM>
+	<VARDECLARATION>
+		<VAR = array>
+			<TYPE> INT </TYPE>
+			<DIMENSIONS count = 1>         # пространства с 0 нумеруются?
+				<DIMENSION> 4 </DIMENSION> # индексы с нуля? тут можно N? (VAR)
+                                           # или типа статика?
+			</DIMENSIONS>
+			<VALUES> <VALUE> 2 4 3 1 5 </VALUE> </VALUES> # всю строку инициализирует?
+														  # если да то как?
+		</VAR>
+	</VARDECLARATION>
+	<FUNC name = sort>
+		<VARDECLARATION>
+			<VAR = i> <TYPE> INT </TYPE> </VAR>
+			<VAR = j> <TYPE> INT </TYPE> </VAR>
+			<VAR = tmp> <TYPE> INT </TYPE> </VAR>
+		</VARDECLARATION>
+		<ASSIGN> 
+			<VALUE> 0 </VALUE> 
+			<TO> <VAR name = i /VAR> </TO>
+		</ASSIGN>
+		<WHILE> 
+			<CHECK>
+				<EQ> <MAX> <VAR name = i /VAR> 3 </MAX> 3 </EQ> # i<=3
+			</CHECK>
+			<DO> 
+				<ASSIGN> 
+					<VALUE> 0 </VALUE> 
+					<TO> <VAR name = j /VAR> </TO>
+				</ASSIGN>
+				<WHILE> 
+					<CHECK>
+						<EQ> <MIN> 
+								<VAR name = j /VAR> 
+								<SUB> 3 <VAR name = i /VAR> </SUB> 
+						</MIN> <VAR name = j /VAR> </EQ> # j<=3-i, значения сравнивает?
+					</CHECK>
+					<DO> 
+						<SWITCH> 
+							<CONDITION> 
+								<CHECK> 
+									<EQ> <DIV> 
+										<VAR name = array <DIM> <INDEX> 
+											0 <ADD> <VAR name = j /VAR> 1 </ADD>
+										</INDEX> </DIM> </VAR> #тут может в другом месте 0?
+										<VAR name = array <DIM> <INDEX> 
+											0 <VAR name = j /VAR>
+										</INDEX> </DIM> </VAR> #тут может в другом месте 0?
+									</DIV> 0 </EQ> # array[j+1] div arrray[j] == 0
+								</CHECK>
+								<DO>
+									<ASSIGN>
+										<VALUE>
+											 <VAR name = array <DIM> <INDEX> 
+												0 <VAR name = j /VAR> # может просто j можно?
+											</INDEX> </DIM> </VAR> 
+										</VALUE> 
+										<TO> <VAR name = tmp /VAR> </TO>
+									</ASSIGN>
+									<ASSIGN>
+										<VALUE>
+											<VAR name = array <DIM> <INDEX> 
+												0 <ADD> <VAR name = j /VAR> 1 </ADD> 
+											</INDEX> </DIM> </VAR> 
+										</VALUE> 
+										<TO>
+											<VAR name = array <DIM> <INDEX> 
+												0 <VAR name = j /VAR>
+											</INDEX> </DIM> </VAR>
+										</TO>
+									</ASSIGN>
+									<ASSIGN>
+										<VALUE> <VAR name = tmp /VAR> </VALUE> 
+										<TO>
+											 <VAR name = array <DIM> <INDEX> 
+												0 <ADD> <VAR name = j /VAR> 1 </ADD> 
+											</INDEX> </DIM> </VAR> 
+										</TO>
+									</ASSIGN>
+								</DO>
+							</CONDITION>
+						</SWITCH> 
+						<ASSIGN> 
+							<VALUE> <ADD> <VAR name = j /VAR> 1 </ADD> </VALUE> 
+							<TO> <VAR name = j /VAR> </TO>
+						</ASSIGN>
+					</DO>
+				</WHILE>
+				<ASSIGN> 
+					<VALUE> <ADD> <VAR name = i /VAR> 1 </ADD> </VALUE> 
+					<TO> <VAR name = i /VAR> </TO>
+				</ASSIGN>
+			</DO> # в условии почему-то не написано что его надо закрыть			
+		</WHILE>
+	</FUNC>
+	<FUNC name = main>
+		<CALL> sort </CALL>
+	</FUNC>
+</PROGRAM>
