@@ -6,13 +6,16 @@
 				<DIMENSION> 4 </DIMENSION> # индексы с нуля? тут можно N? (VAR)
                                            # или типа статика?
 			</DIMENSIONS>
-			<VALUES> <VALUE> 2 4 3 1 5 </VALUE> </VALUES> # всю строку инициализирует?
-														  # если да то как?
+			<VALUES> 	<VALUE> 2 </VALUE>
+						<VALUE> 4 </VALUE>
+						<VALUE> 3 </VALUE>
+						<VALUE> 1 </VALUE>
+						<VALUE> 5 </VALUE>  </VALUES> 
 		</VAR>
 	</VARDECLARATION>
 	<FUNC name = sort>
 		<VARDECLARATION>
-			<VAR = i> <TYPE> INT </TYPE> </VAR>
+			<VAR = i> <TYPE> INT </TYPE> </VAR> # можно их инициализировать тоже тут
 			<VAR = j> <TYPE> INT </TYPE> </VAR>
 			<VAR = tmp> <TYPE> INT </TYPE> </VAR>
 		</VARDECLARATION>
@@ -41,41 +44,41 @@
 							<CONDITION> 
 								<CHECK> 
 									<EQ> <DIV> 
-										<VAR name = array <DIM> <INDEX> 
-											0 <ADD> <VAR name = j /VAR> 1 </ADD>
-										</INDEX> </DIM> </VAR> #тут может в другом месте 0?
-										<VAR name = array <DIM> <INDEX> 
+										<VAR name = array <DIM> 0 </DIM> <INDEX> 
+											<ADD> <VAR name = j /VAR> 1 </ADD>
+										</INDEX> </VAR> 
+										<VAR name = array <DIM> 0 </DIM> <INDEX> 
 											0 <VAR name = j /VAR>
-										</INDEX> </DIM> </VAR> #тут может в другом месте 0?
+										</INDEX> </VAR> 
 									</DIV> 0 </EQ> # array[j+1] div arrray[j] == 0
 								</CHECK>
 								<DO>
 									<ASSIGN>
 										<VALUE>
-											 <VAR name = array <DIM> <INDEX> 
-												0 <VAR name = j /VAR> # может просто j можно?
-											</INDEX> </DIM> </VAR> 
+											 <VAR name = array <DIM> 0 </DIM> <INDEX> 
+												<VAR name = j /VAR> # может просто j можно?
+											</INDEX> </VAR> 
 										</VALUE> 
 										<TO> <VAR name = tmp /VAR> </TO>
 									</ASSIGN>
 									<ASSIGN>
 										<VALUE>
-											<VAR name = array <DIM> <INDEX> 
-												0 <ADD> <VAR name = j /VAR> 1 </ADD> 
-											</INDEX> </DIM> </VAR> 
+											<VAR name = array <DIM> 0 </DIM> <INDEX> 
+												<ADD> <VAR name = j /VAR> 1 </ADD> 
+											</INDEX> </VAR> 
 										</VALUE> 
 										<TO>
-											<VAR name = array <DIM> <INDEX> 
-												0 <VAR name = j /VAR>
-											</INDEX> </DIM> </VAR>
+											<VAR name = array <DIM> 0 </DIM> <INDEX> 
+												<VAR name = j /VAR>
+											</INDEX> </VAR>
 										</TO>
 									</ASSIGN>
 									<ASSIGN>
 										<VALUE> <VAR name = tmp /VAR> </VALUE> 
 										<TO>
-											 <VAR name = array <DIM> <INDEX> 
-												0 <ADD> <VAR name = j /VAR> 1 </ADD> 
-											</INDEX> </DIM> </VAR> 
+											 <VAR name = array <DIM> 0 </DIM> <INDEX> 
+												<ADD> <VAR name = j /VAR> 1 </ADD> 
+											</INDEX> </VAR> 
 										</TO>
 									</ASSIGN>
 								</DO>
