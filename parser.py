@@ -1,4 +1,3 @@
-#from __future__ import annotations
 import ply.yacc as yacc
 from lexer import Lexer
 from ply.lex import LexError
@@ -91,7 +90,6 @@ class Parser():
 		| operator
 		| empty'''
 		p[0] = p[1]
-		# в assignment'е будут все выражения (результатом которых является временная переменная)
 
 	def p_assignment(self, p):
 		'assignment : ASSIGN_START VALUE_START expression VALUE_END TO_START variables TO_END ASSIGN_END'
@@ -100,8 +98,6 @@ class Parser():
 	def p_while(self, p):
 		'while : WHILE_START CHECK_START expression CHECK_END DO_START statements DO_END WHILE_END'
 		p[0] = SyntaxTreeNode('while', children={'condition': p[3], 'body': p[6]}, lineno=p.lineno(1), lexpos=p.lexpos(1))
-
-	#можно чек ду сделать отдельным правилом, но надо ли?
 
 	def p_switch(self, p):
 		'switch : SWITCH_START conditions SWITCH_END'
@@ -128,11 +124,11 @@ class Parser():
 		p[0] = SyntaxTreeNode('function_call', value=p[2], lineno=p.lineno(1), lexpos=p.lexpos(1))
 
 	def p_funcname(self, p):
-		'''funcname : MAIN
-		| ID'''
+		'''funcname : ID
+		| MAIN'''
 		p[0] = SyntaxTreeNode('funcname', value=p[1], lineno=p.lineno(1))
 
-	def p_vardeclaration(self, p): #пока без массивов и без СONST и без инициализации ))) про const кстати спросить
+	def p_vardeclaration(self, p): 
 		'vardeclaration : VARDECLARATION_START declarations VARDECLARATION_END'
 		p[0] = SyntaxTreeNode('vardeclaration', children=p[2], lineno=p.lineno(1), lexpos=p.lexpos(1))
 		
@@ -144,13 +140,90 @@ class Parser():
 		else:
 			p[0] = SyntaxTreeNode('declarations', children=[p[1], p[2]])
 
-	def p_declaration(self, p):
-		'''declaration : VAR_START EQUALSIGN ID RBRACKET TYPE_START type TYPE_END LBRACKET VAR_END
+	def p_declaration(self,p):
+		'''declaration : declaration_var
+		| declaration_var_init
+		| declaration_var_const
+		| declaration_array
+		| declaration_array_init
+		| declaration_array_const'''
+		p[0] = SyntaxTreeNode('declaration', children=p[1])
+	
+
+	def p_declaration_var(self, p):
+		'''declaration_var : VAR_START EQUALSIGN id RBRACKET TYPE_START type TYPE_END LBRACKET VAR_END
+		| VAR_START EQUALSIGN id CONST EQUALSIGN FALSE RBRACKET TYPE_START type TYPE_END LBRACKET VAR_END
 		| empty'''
 		if len(p) == 2:
 			p[0] = p[1]
 		else:
-			p[0] = SyntaxTreeNode('declaration', value=p[6], children=p[3], lineno=p.lineno(1), lexpos=p.lexpos(1))
+			p[0] = SyntaxTreeNode('declaration_var', value=p[len(p)-4], children=p[3], lineno=p.lineno(1), lexpos=p.lexpos(1))
+
+	def p_declaration_var_const(self, p):
+		'''declaration_var_const : VAR_START EQUALSIGN id CONST EQUALSIGN TRUE RBRACKET TYPE_START type TYPE_END VALUE_START expression VALUE_END LBRACKET VAR_END
+		| empty'''
+		if len(p) == 2:
+			p[0] = p[1]
+		else:
+			p[0] = SyntaxTreeNode('declaration_var_const', value=p[9], children=[p[3], p[12]], lineno=p.lineno(1), lexpos=p.lexpos(1))
+	
+	def p_declaration_var_init(self, p):
+		'''declaration_var_init : VAR_START EQUALSIGN id RBRACKET TYPE_START type TYPE_END VALUE_START expression VALUE_END LBRACKET VAR_END
+		| VAR_START EQUALSIGN id CONST EQUALSIGN FALSE RBRACKET TYPE_START type TYPE_END VALUE_START expression VALUE_END LBRACKET VAR_END
+		| empty'''
+		if len(p) == 2:
+			p[0] = p[1]
+		else:
+			p[0] = SyntaxTreeNode('declaration_var_init', value=p[len(p)-7], children=[p[3], p[len(p)-4]], lineno=p.lineno(1), lexpos=p.lexpos(1))
+
+
+	def p_declaration_array(self,p):
+		'''declaration_array : VAR_START EQUALSIGN id RBRACKET TYPE_START type TYPE_END DIMENSIONS_START COUNT EQUALSIGN const RBRACKET dimensions DIMENSIONS_END LBRACKET VAR_END
+		| VAR_START EQUALSIGN id CONST EQUALSIGN FALSE RBRACKET TYPE_START type TYPE_END DIMENSIONS_START COUNT EQUALSIGN const RBRACKET dimensions DIMENSIONS_END LBRACKET VAR_END
+		| empty'''
+		if len(p) == 2:
+			p[0] = p[1]
+		else:
+			p[0] = SyntaxTreeNode('declaration_array', value=p[len(p)-11], children=[p[3], p[len(p)-6],p[len(p)-4]], lineno=p.lineno(1), lexpos=p.lexpos(1))
+
+	def p_declaration_array_init(self,p):
+		'''declaration_array_init : VAR_START EQUALSIGN id RBRACKET TYPE_START type TYPE_END DIMENSIONS_START COUNT EQUALSIGN const RBRACKET dimensions DIMENSIONS_END VALUES_START values VALUES_END LBRACKET VAR_END
+		| VAR_START EQUALSIGN id CONST EQUALSIGN FALSE RBRACKET  RBRACKET TYPE_START type TYPE_END DIMENSIONS_START COUNT EQUALSIGN const RBRACKET dimensions DIMENSIONS_END VALUES_START values VALUES_END LBRACKET VAR_END
+		| empty'''
+		if len(p) == 2:
+			p[0] = p[1]
+		else:
+			p[0] = SyntaxTreeNode('declaration_array_init', value=p[len(p)-14], children=[p[3], p[len(p)-9], p[len(p)-7], p[len(p)-4],], lineno=p.lineno(1), lexpos=p.lexpos(1))
+
+	def p_declaration_array_const(self,p):
+		'''declaration_array_const : VAR_START EQUALSIGN id CONST EQUALSIGN TRUE RBRACKET TYPE_START type TYPE_END DIMENSIONS_START COUNT EQUALSIGN const RBRACKET dimensions DIMENSIONS_END VALUES_START values VALUES_END LBRACKET VAR_END
+		| empty'''
+		if len(p) == 2:
+			p[0] = p[1]
+		else:
+			p[0] = SyntaxTreeNode('declaration_array_const', value=p[9], children=[p[3], p[14], p[16], p[19]], lineno=p.lineno(1), lexpos=p.lexpos(1))
+	def p_values(self, p):
+		'''values : values value
+		| value'''
+		if len(p) == 2:
+			p[0] = SyntaxTreeNode('value', children=p[1]) 
+		else:
+			p[0] = SyntaxTreeNode('values', children=[p[1], p[2]])
+	def p_value(self, p):
+		'''value : VALUE_START expression VALUE_END'''
+		p[0] = SyntaxTreeNode('value', value=p[2], lineno=p.lineno(1), lexpos=p.lexpos(1))
+	
+	def p_dimensions(self,p):
+		'''dimensions : dimensions dimension
+		| dimension'''
+		if len(p) == 2:
+			p[0] = SyntaxTreeNode('dimension', children=p[1]) 
+		else:
+			p[0] = SyntaxTreeNode('dimensions', children=[p[1], p[2]])
+
+	def p_dimension(self, p):
+		'''dimension : DIMENSION_START expression DIMENSION_END'''
+		p[0] = SyntaxTreeNode('dimension', value=p[1], lineno=p.lineno(1), lexpos=p.lexpos(1))
 
 	def p_type(self, p):
 		'''type : INT
@@ -158,27 +231,46 @@ class Parser():
 		| BOOL'''
 		p[0] = SyntaxTreeNode('type', value=p[1], children=[], lineno=p.lineno(1), lexpos=p.lexpos(1))
 
+	def p_id(self,p):
+		'''id : ID'''
+		p[0] = SyntaxTreeNode('id', value=p[1], children=[], lineno=p.lineno(1), lexpos=p.lexpos(1))
+
 	def p_variables(self, p):
 		'''variables : variables variable
 		| variable'''
 		if len(p) == 2:
-			p[0] = SyntaxTreeNode('variable', children=p[1]) #может еще что-то
+			p[0] = SyntaxTreeNode('variable', children=p[1]) 
 		else:
 			p[0] = SyntaxTreeNode('variables', children=[p[1], p[2]])
 
-	def p_variable(self, p):  #обращение к переменной, пока без массивов
-		'''variable : VAR_START NAME EQUALSIGN ID VAR_END
+	def p_variable(self, p):  
+		'''variable : VAR_START NAME EQUALSIGN id VAR_END
+		| VAR_START NAME EQUALSIGN id dims LBRACKET VAR_END
 		| empty'''
 		if len(p) == 2:
 			p[0] = p[1]
-		else:
+		elif len(p) == 6:
 			p[0] = SyntaxTreeNode('variable', value=p[4], children=[], lineno=p.lineno(1), lexpos=p.lexpos(1))
+		else:
+			p[0] = SyntaxTreeNode('variable_array', value=p[4], children=p[5], lineno=p.lineno(1), lexpos=p.lexpos(1))
+
+	def p_dims(self, p):
+		'''dims : dims dim
+		| dim'''
+		if len(p) == 2:
+			p[0] = SyntaxTreeNode('dim', children=p[1]) 
+		else:
+			p[0] = SyntaxTreeNode('dims', children=[p[1], p[2]])
+	
+	def p_dim(self, p):
+		'''dim : DIM_START expression DIM_END INDEX_START expression INDEX_END'''
+		p[0] = SyntaxTreeNode('dim', children=[p[2],p[5]], lineno=p.lineno(1), lexpos=p.lexpos(1))
 
 	def p_expressions(self, p):
 		'''expressions : expressions expression
 		| expression'''
 		if len(p) == 2:
-			p[0] = SyntaxTreeNode('expression', children=p[1]) #может еще что-то
+			p[0] = SyntaxTreeNode('expression', children=p[1]) 
 		else:
 			p[0] = SyntaxTreeNode('expressions', children=[p[1], p[2]])
 
@@ -189,10 +281,14 @@ class Parser():
 		| empty'''
 		p[0] = p[1]
 
-	def p_const(self, p): #клетки?
+	def p_const(self, p): 
 		'''const : TRUE
 		| FALSE
-		| NUMBER'''
+		| NUMBER
+		| EMPTY
+		| WALL
+		| EXIT
+		| UNDEF'''
 		p[0] = SyntaxTreeNode('const', value=p[1], lineno=p.lineno(1), lexpos=p.lexpos(1))
 
 	def p_math(self, p): #нот без вызова процедуры
@@ -206,14 +302,12 @@ class Parser():
 		| MIN_START expression expressions MIN_END
 		| EQ_START expression expressions EQ_END
 		| NOT_START expression NOT_END'''
-		if len(p) == 9:
+		if len(p) == 4:
 			p[0] = SyntaxTreeNode('unar', value=p[1], children=p[2], lineno=p.lineno(1), lexpos=p.lexpos(1))
 		else:
 			p[0] = SyntaxTreeNode('plural', value=p[1], children=[p[2], p[3]], lineno=p.lineno(1), lexpos=p.lexpos(1))
         
-	#ДОБАВИТЬ МАССИВЫ В VARDECLARATION И VARIABLE!! и оператор узнать что за выражение
-
-	def p_operator(self, p): # в getdronscount обращение к переменной или все-таки имя? какие тут выражения?
+	def p_operator(self, p): 
 		'''operator : LEFT_START expression LEFT_END
 		| RIGHT_START expression RIGHT_END
 		| UP_START expression UP_END
@@ -224,23 +318,21 @@ class Parser():
 
 	def p_error(self,p):
 		print(f'Syntax error at {p.lineno} line\n')
-		#print(p.lexpos)
 
 	def p_empty(self, p):
 		'empty : '
 		p[0] = SyntaxTreeNode('empty')
-	#с empty и рекурсиями что-то подумать и убрать нафиг
 
-parser = Parser()
-f=open('test','r')
-tree, functions,ok = parser.parse(f.read())
-f.close()
+if __name__ == '__main__':
+	parser = Parser()
+	f=open('test(sorting)','r')
+	tree, functions,ok = parser.parse(f.read())
+	f.close()
 
-if tree is not None and ok is True:
-	tree.print()
-	print(functions)
-else:
-	print('error tree built')
-
+	if tree is not None and ok is True:
+		tree.print()
+		#print(functions)
+	else:
+		print('error tree built')
 
 
