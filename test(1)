@@ -1,0 +1,28 @@
+<PROGRAM>
+	<VARDECLARATION>
+		<VAR = a> <TYPE> INT </TYPE> </VAR>
+		<VAR = d> <TYPE> INT </TYPE> </VAR>
+	</VARDECLARATION>
+	<VARDECLARATION>
+		<VAR = b> <TYPE> INT </TYPE> </VAR>
+		<VAR = c> <TYPE> INT </TYPE> </VAR>
+	</VARDECLARATION>
+	<FUNC name = test_assign>
+		<VARDECLARATION>
+			<VAR = tmp> <TYPE> INT </TYPE> </VAR>
+		</VARDECLARATION>
+		<ASSIGN> 
+			<VALUE> 52 </VALUE> 
+			<TO> <VAR name = b /VAR> <VAR name = c /VAR> <VAR name = d /VAR> <VAR name = a /VAR> </TO>
+		</ASSIGN>
+		<ASSIGN> 
+			<VALUE> 51 </VALUE> 
+			<TO> <VAR name = b /VAR> <VAR name = a /VAR> </TO>
+		</ASSIGN>
+		<ASSIGN> 
+			<VALUE> 3 </VALUE> 
+			<TO> <VAR name = e /VAR> <VAR name = a /VAR> <VAR name = b /VAR> </TO>
+		</ASSIGN>
+	</FUNC>
+</PROGRAM>
+	
