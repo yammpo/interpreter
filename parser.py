@@ -270,21 +270,18 @@ class Parser():
 		p[0] = SyntaxTreeNode('const', value=p[1], lineno=p.lineno(1), lexpos=p.lexpos(1))
 
 	def p_math(self, p): #нот без вызова процедуры
-		'''math : ADD_START expression expressions ADD_END
-		| MUL_START expression expressions MUL_END
-		| SUB_START expression expression SUB_END
-		| DIV_START expression expression DIV_END
-		| OR_START expression expressions OR_END
-		| AND_START expression expressions AND_END
-		| MAX_START expression expressions MAX_END
-		| MIN_START expression expressions MIN_END
-		| EQ_START expression expressions EQ_END
+		'''math : ADD_START expressions ADD_END
+		| MUL_START expressions MUL_END
+		| SUB_START expressions SUB_END
+		| DIV_START expressions DIV_END
+		| OR_START expressions OR_END
+		| AND_START expressions AND_END
+		| MAX_START expressions MAX_END
+		| MIN_START expressions MIN_END
+		| EQ_START expressions EQ_END
 		| NOT_START expression NOT_END'''
-		if len(p) == 4:
-			p[0] = SyntaxTreeNode('unar', value=p[1], children=p[2], lineno=p.lineno(1), lexpos=p.lexpos(1))
-		else:
-			p[0] = SyntaxTreeNode('plural', value=p[1], children=[p[2], p[3]], lineno=p.lineno(1), lexpos=p.lexpos(1))
-        
+		p[0] = SyntaxTreeNode('math', value=p[1], children=p[2], lineno=p.lineno(1), lexpos=p.lexpos(1))
+		
 	def p_operator(self, p): 
 		'''operator : LEFT_START expression LEFT_END
 		| RIGHT_START expression RIGHT_END
