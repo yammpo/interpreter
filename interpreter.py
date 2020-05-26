@@ -4,7 +4,7 @@ import random
 from typing import List, Optional, Union
 
 class Variable:
-
+	#перегрузка операторов:
 	def __init__(self, symtype='var', value=None, const_flag=False):
 		self.type = symtype
 		self.value = value
@@ -15,6 +15,26 @@ class Variable:
 
 	def __deepcopy__(self, memodict={}):
 		return Var(self.type, self.value, self.const_flag)
+	
+	#cледующие перегрузки только для интовых переменных:
+	def __lt__(self, other):
+		if self.value < other.value:
+			return True
+		return False
+
+	def __gt__(self, other):
+		if self.value > other.value:
+			return True
+		return False
+
+	def __eq__(self, other):
+		if self.value == other.value:
+			return True
+		return False
+
+	#только для переменных типа bool:
+	def __bool__(self):
+		return self.value
 
 class Interpreter:
 
@@ -60,14 +80,24 @@ class Interpreter:
 				sys.stderr.write(f'error: redeclaration of variable {node.children.value}\n')
 			else:
 				self.symbol_table[self.scope][node.children.value] = Variable(node.value.value, None, False)
-				#print(self.symbol_table)
+		elif node.type == 'declaration_var_init': #можно в парсере попробовать объединить const с init
+			#ПРОВЕРКА И ПРЕОБРАЗОВАНИЕ ТИПОВ
+			if node.children[0].value in self.symbol_table[self.scope].keys():
+				sys.stderr.write(f'error: redeclaration of variable {node.children.value}\n')
+			else:
+				expr = self.interpreter_node(node.children[1])
+				if isinstance(expr,list):
+					expr = expr[0]
+				self.symbol_table[self.scope][node.children[0].value] = Variable(node.value.value, expr.value, False)
 		elif node.type == 'function':
-			#self.scope += 1 #исправить проблемы с областью видимости!
 			if node.value not in self.symbol_table[self.scope].keys(): #кстати надо в парсере исправить
 				self.symbol_table[self.scope][node.value] = node   #не очень понимаю что это за таблица символов
 				self.interpreter_node(node.children)               #что-то типа областей видимости
 			else:                                                      #мб очередная функция: ее переменные?     
 				sys.stderr.write(f'error: redeclaration of function\n')
+		#надо сделать штуку для глобальных переменных, например нулевой scope
+		#переделать: в function не интерпретировать, интерпретировать в CALL и в main
+
 		elif node.type == 'statements':
 			for child in node.children:
 				self.interpreter_node(child)
@@ -99,7 +129,7 @@ class Interpreter:
 					else:
 						expressions.append(expr)
 				else: return None
-			return expressions
+			return expressions #проверить не может ли вернуться пустой список
 		elif node.type == 'math':
 			if node.value == '<ADD>':
 				return self.addition(node.children)
@@ -109,7 +139,19 @@ class Interpreter:
 				return self.subtraction(node.children)
 			elif node.value == '<DIV>':
 				return self.division(node.children)
-
+			elif node.value == '<MAX>':
+				return self.maximum(node.children)
+			elif node.value == '<MIN>':
+				return self.minimum(node.children)
+			elif node.value == '<EQ>':
+				return self.equality(node.children)
+			elif node.value == '<OR>':
+				return self.logic_or(node.children)
+			elif node.value == '<AND>':
+				return self.logic_and(node.children)
+			elif node.value == '<NOT>':
+				return self.logic_not(node.children)
+				
 
 	def assignment(self, node: parser.SyntaxTreeNode): 
 		variables = self.interpreter_node(node.children[1])
@@ -136,47 +178,95 @@ class Interpreter:
 	
 	def addition(self, op: parser.SyntaxTreeNode): #cумма кучи true чем должна быть?
 		#ПРЕОБРАЗОВАНИЕ ТИПОВ!!!
-		values = self.interpreter_node(op)
-		if (values is None) or (len(values) < 2):
+		expressions = self.interpreter_node(op)
+		if (expressions is None): # or (len(expressions) < 2)
 			sys.stderr.write(f'error: more arguments in addition expected\n')
 			return
 		summ = 0
-		for value in values:
-			summ += value.value
+		for expression in expressions:
+			summ += expression.value
 		return Variable('INT', summ, False)
 	
 	def multiplication(self, op: parser.SyntaxTreeNode):
 		#ПРЕОБРАЗОВАНИЕ ТИПОВ!!!
-		values = self.interpreter_node(op)
-		if (values is None) or (len(values) < 2):
+		expressions = self.interpreter_node(op)
+		if (expressions is None): # or (len(expressions) < 2
 			sys.stderr.write(f'error: more arguments in multiplication expected\n')
 			return
 		mul = 1
-		for value in values:
-			mul *= value.value
+		for expression in expressions:
+			mul *= expression.value
 		return Variable('INT', mul, False)
 	
 	def subtraction(self, op: parser.SyntaxTreeNode):
 		#ПРЕОБРАЗОВАНИЕ ТИПОВ!!!
-		values = self.interpreter_node(op)
-		if (values is None) or (len(values) != 2):
+		expressions = self.interpreter_node(op)
+		if (expressions is None) or (len(expressions) != 2):
 			sys.stderr.write(f'error: two arguments in subtraction expected\n')
 			return
-		sub = values[0].value - values[1].value
-		return Variable('INT', sub, False)
+		return Variable('INT', expressions[0].value - expressions[1].value, False)
 
 	def division(self, op: parser.SyntaxTreeNode):
 		#ПРЕОБРАЗОВАНИЕ ТИПОВ!!!
-		values = self.interpreter_node(op)
-		if (values is None) or (len(values) != 2):
-			sys.stderr.write(f'error: two arguments in division expected\n')
+		expressions = self.interpreter_node(op)
+		if (expressions is None) or (len(expressions) != 2):
+			sys.stderr.write(f'error: more arguments in division expected\n')
 			return
-		if values[1].value == 0:
+		if expressions[1].value == 0:
 			sys.stderr.write(f'error: division by zero\n')
 			return
-		div = values[0].value // values[1].value
-		return Variable('INT', div, False)
+		return Variable('INT', expressions[0].value // expressions[1].value, False)
 
+	def maximum(self, op: parser.SyntaxTreeNode):
+		#ПРЕОБРАЗОВАНИЕ ТИПОВ!!!
+		expressions = self.interpreter_node(op)
+		if (expressions is None):
+			sys.stderr.write(f'error: more arguments in maximum expected\n')
+			return
+		return Variable('INT', max(expressions).value, False)
+
+	def minimum(self, op: parser.SyntaxTreeNode):
+		#ПРЕОБРАЗОВАНИЕ ТИПОВ!!!
+		expressions = self.interpreter_node(op)
+		if (expressions is None):
+			sys.stderr.write(f'error: more arguments in minimum expected\n')
+			return
+		return Variable('INT', min(expressions).value, False)
+
+	def equality(self, op: parser.SyntaxTreeNode):
+		#ПРЕОБРАЗОВАНИЕ ТИПОВ!!!
+		expressions = self.interpreter_node(op)
+		if (expressions is None):
+			sys.stderr.write(f'error: more arguments in equality expected\n')
+			return	
+		return Variable('BOOL', len(expressions) == expressions.count(expressions[0]), False)
+		
+	def logic_or(self, op: parser.SyntaxTreeNode):
+		#ПРЕОБРАЗОВАНИЕ ТИПОВ!!!
+		expressions = self.interpreter_node(op)
+		if (expressions is None):
+			sys.stderr.write(f'error: more arguments in logic or expected\n')
+			return
+		return Variable('BOOL', any(expressions), False)
+
+	def logic_and(self, op: parser.SyntaxTreeNode):
+		#ПРЕОБРАЗОВАНИЕ ТИПОВ!!!
+		expressions = self.interpreter_node(op)
+		if (expressions is None):
+			sys.stderr.write(f'error: more arguments in logic and expected\n')
+			return
+		return Variable('BOOL', all(expressions), False)
+		
+	def logic_not(self, op: parser.SyntaxTreeNode):
+		#ПРЕОБРАЗОВАНИЕ ТИПОВ!!!
+		expression = self.interpreter_node(op)
+		if (expression is None):
+			sys.stderr.write(f'error: more arguments in logic not expected\n')
+			return
+		if isinstance(expression,list):
+			expression = expression[0]
+		return Variable('BOOL', not expression.value, False)
+	
 	def print_symbol(self):
 		print(self.symbol_table)
 		

@@ -2,6 +2,7 @@
 	<VARDECLARATION>
 		<VAR = a> <TYPE> INT </TYPE> </VAR>
 		<VAR = d> <TYPE> INT </TYPE> </VAR>
+		<VAR = init> <TYPE> INT </TYPE> <VALUE> <ADD> 2 3 </ADD></VALUE> </VAR>
 	</VARDECLARATION>
 	<VARDECLARATION>
 		<VAR = b> <TYPE> INT </TYPE> </VAR>
@@ -13,6 +14,12 @@
 			<VAR = mulres> <TYPE> INT </TYPE> </VAR>
 			<VAR = subres> <TYPE> INT </TYPE> </VAR>
 			<VAR = divres> <TYPE> INT </TYPE> </VAR>
+			<VAR = maxres> <TYPE> INT </TYPE> </VAR>
+			<VAR = minres> <TYPE> INT </TYPE> </VAR>
+			<VAR = eqres> <TYPE> BOOL </TYPE> </VAR>
+			<VAR = andres> <TYPE> BOOL </TYPE> </VAR>
+			<VAR = orres> <TYPE> BOOL </TYPE> </VAR>
+			<VAR = notres> <TYPE> BOOL </TYPE> </VAR>
 		</VARDECLARATION>
 		<ASSIGN> 
 			<VALUE> 4 </VALUE> 
@@ -33,7 +40,32 @@
 		<ASSIGN> 
 			<VALUE> <DIV> <VAR name = mulres /VAR> 10 </DIV> </VALUE> 
 			<TO> <VAR name = divres /VAR> </TO>
+		</ASSIGN>
+		<ASSIGN> 
+			<VALUE> <MAX> <VAR name = subres /VAR> -1 -5 </MAX> </VALUE> 
+			<TO> <VAR name = maxres /VAR> </TO>
+		</ASSIGN>
+		<ASSIGN> 
+			<VALUE> <ADD> <MIN> 8 <VAR name = maxres /VAR> <VAR name = subres /VAR> -15 </MIN>
+				<MAX> 30  <VAR name = divres /VAR> </MAX> </ADD> </VALUE> 
+			<TO> <VAR name = minres /VAR> </TO>
+		</ASSIGN>
+		<ASSIGN> 
+			<VALUE> <EQ> <ADD> 1 2 </ADD> 3 <VAR name = a /VAR> </EQ> </VALUE> 
+			<TO> <VAR name = eqres /VAR> </TO>
+		</ASSIGN>
+		<ASSIGN> 
+			<VALUE> <AND> <VAR name = eqres /VAR> <EQ> 3 3 </EQ> <EQ> 1 2 3 </EQ> </AND> </VALUE> 
+			<TO> <VAR name = andres /VAR> </TO>
+		</ASSIGN>
+		<ASSIGN> 
+			<VALUE> <OR> <VAR name = eqres /VAR> <EQ> 3 3 </EQ> <EQ> 1 2 3 </EQ> </OR> </VALUE> 
+			<TO> <VAR name = orres /VAR> </TO>
 		</ASSIGN>	
+		<ASSIGN> 
+			<VALUE> <NOT> <VAR name = orres /VAR> </NOT> </VALUE> 
+			<TO> <VAR name = notres /VAR> </TO>
+		</ASSIGN>			
 	</FUNC>
 </PROGRAM>
 	
