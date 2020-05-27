@@ -8,7 +8,7 @@
 		<VAR = b> <TYPE> INT </TYPE> </VAR>
 		<VAR = c> <TYPE> INT </TYPE> </VAR>
 	</VARDECLARATION>
-	<FUNC name = test_assign>
+	<FUNC name = main>
 		<VARDECLARATION>
 			<VAR = addres> <TYPE> INT </TYPE> </VAR>
 			<VAR = mulres> <TYPE> INT </TYPE> </VAR>

@@ -1,0 +1,55 @@
+<PROGRAM>
+	<VARDECLARATION>
+		<VAR = a> <TYPE> INT </TYPE> </VAR>
+	</VARDECLARATION>
+	<FUNC name = test_locals>
+		<VARDECLARATION>
+			<VAR = b> <TYPE> INT </TYPE> </VAR>
+		</VARDECLARATION>
+		<ASSIGN> 
+			<VALUE> 4 </VALUE> 
+			<TO> <VAR name = b /VAR> <VAR name = a /VAR> </TO>
+		</ASSIGN>
+	</FUNC>
+	<FUNC name = test_locals_2>
+		<VARDECLARATION>
+			<VAR = b> <TYPE> INT </TYPE> </VAR>
+		</VARDECLARATION>
+		<ASSIGN> 
+			<VALUE> 5 </VALUE> 
+			<TO> <VAR name = b /VAR> <VAR name = a /VAR> </TO>
+		</ASSIGN>
+	</FUNC>
+	<FUNC name = main>
+		<VARDECLARATION>
+			<VAR = check> <TYPE> BOOL </TYPE> </VAR>
+			<VAR = check_2> <TYPE> BOOL </TYPE> </VAR>
+			<VAR = cycle> <TYPE> INT </TYPE> <VALUE> 0 </VALUE> </VAR>
+		</VARDECLARATION>
+		<CALL> test_locals_2 </CALL>
+		<ASSIGN> 
+			<VALUE> <EQ> <VAR name = a /VAR> 5 </EQ> </VALUE> 
+			<TO> <VAR name = check_2 /VAR> </TO>
+		</ASSIGN>
+		<CALL> test_locals </CALL>
+		<ASSIGN> 
+			<VALUE> <EQ> <VAR name = a /VAR> 4 </EQ> </VALUE> 
+			<TO> <VAR name = check /VAR> </TO>
+		</ASSIGN>
+		<WHILE> 
+			<CHECK> <EQ> <MAX> <VAR name = a /VAR> 0 </MAX> <VAR name = a /VAR> </EQ> </CHECK>
+			<DO>
+				<ASSIGN> 
+					<VALUE> <ADD> <VAR name = cycle /VAR> 1 </ADD> </VALUE> 
+					<TO> <VAR name = cycle /VAR> </TO>
+				</ASSIGN>
+				<ASSIGN> 
+					<VALUE> <SUB> <VAR name = a /VAR> 1 </SUB> </VALUE> 
+					<TO> <VAR name = a /VAR> </TO>
+				</ASSIGN>
+			</DO>
+		</WHILE>
+	</FUNC>
+</PROGRAM>
+
+	

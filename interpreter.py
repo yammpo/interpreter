@@ -42,7 +42,7 @@ class Interpreter:
 		self.parser = parser.Parser()
 		self.program = None
 		self.symbol_table = [dict()]
-		self.functions = None
+		self.functions = dict()
 		self.tree = None
 		self.scope = 0
 
@@ -50,8 +50,13 @@ class Interpreter:
 		self.prog = prog
 		self.tree, self.functions, parsing_ok = self.parser.parse(self.prog)
 		if parsing_ok:
-			self.interpreter_tree(self.tree)
+			#self.interpreter_tree(self.tree)
 			self.interpreter_node(self.tree)
+			if 'main' not in self.functions.keys():
+				sys.stderr.write(f'error: no main function\n')
+				return
+			else:
+				self.interpreter_node(self.functions['main'])
 		else:
 			sys.stderr.write(f'Can\'t intemperate this, incorrect syntax\n')
 
@@ -75,29 +80,33 @@ class Interpreter:
 		elif node.type == 'declarations': #надо в словаре хранить флажочек константа это или нет
 			for child in node.children:
 				self.interpreter_node(child)
-		elif node.type == 'declaration_var': #cделать с инициализацией
-			if node.children.value in self.symbol_table[self.scope].keys():
+		elif node.type == 'declaration_var':
+			if (node.children.value in self.symbol_table[self.scope].keys()) or (node.children.value in self.symbol_table[0].keys()):
 				sys.stderr.write(f'error: redeclaration of variable {node.children.value}\n')
+				return
 			else:
 				self.symbol_table[self.scope][node.children.value] = Variable(node.value.value, None, False)
 		elif node.type == 'declaration_var_init': #можно в парсере попробовать объединить const с init
 			#ПРОВЕРКА И ПРЕОБРАЗОВАНИЕ ТИПОВ
-			if node.children[0].value in self.symbol_table[self.scope].keys():
+			name = node.children[0].value
+			if (name in self.symbol_table[self.scope].keys()) or (name in self.symbol_table[0].keys()):
 				sys.stderr.write(f'error: redeclaration of variable {node.children.value}\n')
+				return
 			else:
 				expr = self.interpreter_node(node.children[1])
 				if isinstance(expr,list):
 					expr = expr[0]
-				self.symbol_table[self.scope][node.children[0].value] = Variable(node.value.value, expr.value, False)
+				self.symbol_table[self.scope][name] = Variable(node.value.value, expr.value, False)
 		elif node.type == 'function':
-			if node.value not in self.symbol_table[self.scope].keys(): #кстати надо в парсере исправить
-				self.symbol_table[self.scope][node.value] = node   #не очень понимаю что это за таблица символов
-				self.interpreter_node(node.children)               #что-то типа областей видимости
-			else:                                                      #мб очередная функция: ее переменные?     
-				sys.stderr.write(f'error: redeclaration of function\n')
+			if node.value.value not in self.functions.keys():
+				self.functions[node.value.value] = node.children #занесли в словарь имя функции : statements
+				#self.interpreter_node(node.children)              
+			else:                                                        
+				sys.stderr.write(f'error: redeclaration of function {node.value.value}\n')
 		#надо сделать штуку для глобальных переменных, например нулевой scope
 		#переделать: в function не интерпретировать, интерпретировать в CALL и в main
-
+		elif node.type == 'function_call': # можно ли вызывать main?
+			self.function_call(node)
 		elif node.type == 'statements':
 			for child in node.children:
 				self.interpreter_node(child)
@@ -109,7 +118,6 @@ class Interpreter:
 				var = self.interpreter_node(child)
 				if var is not None:
 					variables.extend(var)
-					#variables.extend(self.interpreter_node(child))
 				else: return None
 			return variables
 		elif node.type == 'variable':
@@ -130,6 +138,23 @@ class Interpreter:
 						expressions.append(expr)
 				else: return None
 			return expressions #проверить не может ли вернуться пустой список
+		elif node.type == 'conditions':
+			for child in node.children:
+				self.interpreter_node(child)
+		elif node.type == 'condition':
+			#ПРОВЕРКА И ПРЕОБРАЗОВАНИЕ ТИПОВ
+			condition = self.interpreter_node(node.children['condition']).value
+			if condition is True:
+				self.interpreter_node(node.children['body'])
+		elif node.type == 'switch':
+			self.interpreter_node(node.children)
+		elif node.type == 'while':
+			while True:
+				condition = self.interpreter_node(node.children['condition']).value
+				if condition is True:
+					self.interpreter_node(node.children['body'])
+				else:
+					break
 		elif node.type == 'math':
 			if node.value == '<ADD>':
 				return self.addition(node.children)
@@ -266,13 +291,29 @@ class Interpreter:
 		if isinstance(expression,list):
 			expression = expression[0]
 		return Variable('BOOL', not expression.value, False)
-	
+
+	def function_call(self, node: parser.SyntaxTreeNode):
+		if self.scope == 1000:
+			sys.stderr.write(f'error: recursion\n')
+			return
+		funcname = node.value.value
+		if funcname not in self.functions.keys():
+			sys.stderr.write(f'error: call of undeclarated function\n')
+			return
+		self.scope += 1
+		self.symbol_table.append(dict())
+		statements = self.functions[funcname]
+		if statements is not None:
+			self.interpreter_node(statements)   
+		self.scope -= 1 #хз
+		self.symbol_table.pop()
+		
 	def print_symbol(self):
 		print(self.symbol_table)
 		
 if __name__ == '__main__':
 	interpreter = Interpreter()
-	f=open('test(1)','r')
+	f=open('test(2)','r')
 	interpreter.interpreter(f.read())
 	f.close()
 	interpreter.print_symbol()
