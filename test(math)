@@ -7,19 +7,22 @@
 	<VARDECLARATION>
 		<VAR = b> <TYPE> INT </TYPE> </VAR>
 		<VAR = c> <TYPE> INT </TYPE> </VAR>
+		<VAR = pi CONST = TRUE> <TYPE> INT </TYPE> <VALUE> 314 </VALUE> </VAR>
 	</VARDECLARATION>
 	<FUNC name = main>
 		<VARDECLARATION>
-			<VAR = addres> <TYPE> INT </TYPE> </VAR>
+			<VAR = typeres> <TYPE> INT </TYPE> </VAR>
 			<VAR = mulres> <TYPE> INT </TYPE> </VAR>
 			<VAR = subres> <TYPE> INT </TYPE> </VAR>
-			<VAR = divres> <TYPE> INT </TYPE> </VAR>
+			<VAR = divres> <TYPE> INT </TYPE> <VALUE> TRUE </VALUE> </VAR>
 			<VAR = maxres> <TYPE> INT </TYPE> </VAR>
-			<VAR = minres> <TYPE> INT </TYPE> </VAR>
-			<VAR = eqres> <TYPE> BOOL </TYPE> </VAR>
-			<VAR = andres> <TYPE> BOOL </TYPE> </VAR>
-			<VAR = orres> <TYPE> BOOL </TYPE> </VAR>
-			<VAR = notres> <TYPE> BOOL </TYPE> </VAR>
+			<VAR = minres> <TYPE> INT </TYPE> </VAR> 
+			<VAR = eqres> <TYPE> BOOL </TYPE> <VALUE> TRUE </VALUE> </VAR>
+			<VAR = andres> <TYPE> BOOL </TYPE> <VALUE> TRUE </VALUE> </VAR>
+			<VAR = orres> <TYPE> BOOL </TYPE> <VALUE> TRUE </VALUE> </VAR>
+			<VAR = notres> <TYPE> BOOL </TYPE>  <VALUE> TRUE </VALUE> </VAR>
+			<VAR = cell_1> <TYPE> CELL </TYPE> <VALUE> EMPTY </VALUE> </VAR>
+			<VAR = cell_2> <TYPE> CELL </TYPE> <VALUE> EMPTY </VALUE> </VAR>
 		</VARDECLARATION>
 		<ASSIGN> 
 			<VALUE> 4 </VALUE> 
@@ -27,10 +30,10 @@
 		</ASSIGN>
 		<ASSIGN> 
 			<VALUE> 3 </VALUE> 
-			<TO> <VAR name = a /VAR> </TO>
+			<TO> <VAR name = a /VAR> <VAR name = pi /VAR> </TO>
 		</ASSIGN>
 		<ASSIGN> 
-			<VALUE> <MUL> 10 <ADD> <VAR name = a /VAR> <VAR name = b /VAR> </ADD> </MUL> </VALUE> 
+			<VALUE> <MUL> 10 <ADD> <VAR name = a /VAR> <VAR name = b /VAR> <VAR name = eqres /VAR> </ADD> </MUL> </VALUE> 
 			<TO> <VAR name = mulres /VAR> </TO>
 		</ASSIGN>	
 		<ASSIGN> 
@@ -47,7 +50,7 @@
 		</ASSIGN>
 		<ASSIGN> 
 			<VALUE> <ADD> <MIN> 8 <VAR name = maxres /VAR> <VAR name = subres /VAR> -15 </MIN>
-				<MAX> 30  <VAR name = divres /VAR> </MAX> </ADD> </VALUE> 
+				<MAX> 30  <VAR name = divres /VAR> TRUE TRUE FALSE </MAX> </ADD> </VALUE> 
 			<TO> <VAR name = minres /VAR> </TO>
 		</ASSIGN>
 		<ASSIGN> 
@@ -65,6 +68,10 @@
 		<ASSIGN> 
 			<VALUE> <NOT> <VAR name = orres /VAR> </NOT> </VALUE> 
 			<TO> <VAR name = notres /VAR> </TO>
+		</ASSIGN>
+		<ASSIGN> 
+			<VALUE> <EQ>  <VAR name = cell_1 /VAR>  <VAR name = cell_2 /VAR>   EMPTY WALL </EQ> </VALUE> 
+			<TO> <VAR name = typeres /VAR> </TO>
 		</ASSIGN>			
 	</FUNC>
 </PROGRAM>

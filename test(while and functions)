@@ -23,6 +23,7 @@
 	<FUNC name = main>
 		<VARDECLARATION>
 			<VAR = check> <TYPE> BOOL </TYPE> </VAR>
+			<VAR = check_type> <TYPE> BOOL </TYPE> <VALUE> WALL </VALUE> </VAR>
 			<VAR = check_2> <TYPE> BOOL </TYPE> </VAR>
 			<VAR = cycle> <TYPE> INT </TYPE> <VALUE> 0 </VALUE> </VAR>
 		</VARDECLARATION>
