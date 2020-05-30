@@ -3,26 +3,22 @@
 		<VAR = array>
 			<TYPE> INT </TYPE>
 			<DIMENSIONS count = 1>       
-				<DIMENSION> 4 </DIMENSION> 
-                                         
+				<DIMENSION> 5 </DIMENSION>                
 			</DIMENSIONS>
 			<VALUES> 	<VALUE> 2 </VALUE>
 						<VALUE> 4 </VALUE>
 						<VALUE> 3 </VALUE>
 						<VALUE> 1 </VALUE>
-						<VALUE> 5 </VALUE>  </VALUES> 
+						<VALUE> 5 </VALUE>
+			</VALUES> 
 		</VAR>
 	</VARDECLARATION>
 	<FUNC name = sort>
 		<VARDECLARATION>
-			<VAR = i> <TYPE> INT </TYPE> </VAR> 
+			<VAR = i> <TYPE> INT </TYPE> <VALUE> 0 </VALUE> </VAR> 
 			<VAR = j> <TYPE> INT </TYPE> </VAR>
 			<VAR = tmp> <TYPE> INT </TYPE> </VAR>
 		</VARDECLARATION>
-		<ASSIGN> 
-			<VALUE> 0 </VALUE> 
-			<TO> <VAR name = i /VAR> </TO>
-		</ASSIGN>
 		<WHILE> 
 			<CHECK>
 				<EQ> <MAX> <VAR name = i /VAR> 3 </MAX> 3 </EQ>
@@ -43,42 +39,40 @@
 						<SWITCH> 
 							<CONDITION> 
 								<CHECK> 
-									<EQ> <DIV> 
-										<VAR name = array <DIM> 0 </DIM> <INDEX> 
-											<ADD> <VAR name = j /VAR> 1 </ADD>
-										</INDEX> </VAR> 
-										<VAR name = array <DIM> 0 </DIM> <INDEX> 
-											<VAR name = j /VAR>
-										</INDEX> </VAR> 
-									</DIV> 0 </EQ>
+									<EQ> <DIV> 	<VAR name = array> 
+													<DIM> <INDEX> <ADD> <VAR name = j /VAR> 1 </ADD> </INDEX> </DIM> 
+												</VAR> 
+												<VAR name = array> 
+													<DIM> <INDEX> <VAR name = j /VAR> </INDEX> </DIM>
+												</VAR>	</DIV> 0 </EQ>
 								</CHECK>
 								<DO>
 									<ASSIGN>
 										<VALUE>
-											 <VAR name = array <DIM> 0 </DIM> <INDEX> 
-												<VAR name = j /VAR>
-											</INDEX> </VAR> 
+											<VAR name = array>
+													<DIM> <INDEX> <VAR name = j /VAR> </INDEX> </DIM>
+											</VAR> 
 										</VALUE> 
 										<TO> <VAR name = tmp /VAR> </TO>
 									</ASSIGN>
 									<ASSIGN>
 										<VALUE>
-											<VAR name = array <DIM> 0 </DIM> <INDEX> 
-												<ADD> <VAR name = j /VAR> 1 </ADD> 
-											</INDEX> </VAR> 
+											<VAR name = array>
+													<DIM> <INDEX> <ADD> <VAR name = j /VAR> 1 </ADD> </INDEX> </DIM> 
+											</VAR> 
 										</VALUE> 
 										<TO>
-											<VAR name = array <DIM> 0 </DIM> <INDEX> 
-												<VAR name = j /VAR>
-											</INDEX> </VAR>
+											<VAR name = array> 
+													<DIM> <INDEX> <VAR name = j /VAR> </INDEX> </DIM>
+											</VAR>
 										</TO>
 									</ASSIGN>
 									<ASSIGN>
 										<VALUE> <VAR name = tmp /VAR> </VALUE> 
 										<TO>
-											 <VAR name = array <DIM> 0 </DIM> <INDEX> 
-												<ADD> <VAR name = j /VAR> 1 </ADD> 
-											</INDEX> </VAR> 
+											<VAR name = array>
+													<DIM> <INDEX> <ADD> <VAR name = j /VAR> 1 </ADD> </INDEX> </DIM>
+											</VAR> 
 										</TO>
 									</ASSIGN>
 								</DO>

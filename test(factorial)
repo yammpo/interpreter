@@ -25,7 +25,7 @@
 						</VALUE> 
 						<TO> <VAR name = a /VAR> </TO>
 					</ASSIGN>
-				</DO>	
+				</DO>
 			</CONDITION>
 			<CONDITION>
 				<CHECK> <EQ> <VAR name = a /VAR> 0 </EQ> </CHECK>
