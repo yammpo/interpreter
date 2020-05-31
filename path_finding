@@ -3,8 +3,8 @@
         <VAR = map>
 			<TYPE> INT </TYPE>
 			<DIMENSIONS count = 2>         
-				<DIMENSION> 15 </DIMENSION>
-                <DIMENSION> 15 </DIMENSION>
+				<DIMENSION> 21 </DIMENSION>
+                <DIMENSION> 21 </DIMENSION>
 			</DIMENSIONS> 
 		</VAR>
         <VAR = run>
@@ -13,15 +13,15 @@
         </VAR>
         <VAR = tmp>
             <TYPE> BOOL </TYPE>
-            <VALUE> TRUE </VALUE>
+            <VALUE> FALSE </VALUE>
         </VAR>
         <VAR = x>
             <TYPE> INT </TYPE>
-            <VALUE> 3 </VALUE>
+            <VALUE> 10 </VALUE>
         </VAR>
         <VAR = y>
             <TYPE> INT </TYPE>
-            <VALUE> 3 </VALUE>
+            <VALUE> 10 </VALUE>
         </VAR>
 
     </VARDECLARATION>
@@ -38,12 +38,13 @@
         </VARDECLARATION>
         <WHILE> 
 			<CHECK>
-                <NOT> <EQ> <VAR name = i /VAR>  15 </EQ> </NOT>
+                <NOT> <EQ> <VAR name = i /VAR>  21 </EQ> </NOT>
 			</CHECK>
 			<DO> 
+                <ASSIGN> <VALUE>  0 </VALUE> <TO>  <VAR name = j /VAR> </TO> </ASSIGN>
                 <WHILE> 
 			        <CHECK>
-                        <NOT> <EQ> <VAR name = j /VAR>  15 </EQ> </NOT>
+                        <NOT> <EQ> <VAR name = j /VAR>  21 </EQ> </NOT>
 			        </CHECK>
                     <DO>   
                         <ASSIGN> <VALUE> 0 </VALUE> <TO> <VAR name =map  > <DIM> 
@@ -58,7 +59,12 @@
                 <ASSIGN> <VALUE>  <ADD> <VAR name = i /VAR> 1 </ADD> </VALUE> <TO>  <VAR name = i /VAR> </TO> </ASSIGN>
             </DO>
         </WHILE>
-        
+                                <ASSIGN> <VALUE> 1 </VALUE> <TO> <VAR name =map  > <DIM> 
+                                                                            <INDEX> <VAR name = x /VAR> </INDEX> 
+                                                                            <INDEX> <VAR name = y /VAR> </INDEX> 
+                                                                        </DIM> </VAR>
+                                                    </TO>
+                        </ASSIGN>
         <CALL> top_search </CALL>
         <SWITCH> <CONDITION> <CHECK> <VAR name = run /VAR> </CHECK>
             <DO> <CALL> right_search </CALL> </DO>
@@ -71,6 +77,7 @@
         </CONDITION> </SWITCH>
     </FUNC>
     <FUNC name = top_search>
+        <ASSIGN> <VALUE>  FALSE </VALUE> <TO>  <VAR name = tmp /VAR> </TO> </ASSIGN>
         <SWITCH>
             <CONDITION> <CHECK> <EQ> <VAR name =map > <DIM> 
                                                             <INDEX> <ADD> <VAR name = x /VAR> -1 </ADD> </INDEX> 
@@ -108,7 +115,8 @@
                                                 </TO> 
                                 </ASSIGN>
                                 <ASSIGN> <VALUE>  <ADD> <VAR name = x /VAR> 1 </ADD> </VALUE> <TO>  <VAR name = x /VAR> </TO> </ASSIGN>
-                                <DOWN> 1 </DOWN>
+                                <SWITCH> <CONDITION> <CHECK> <VAR name = run /VAR> </CHECK>
+                                    <DO>  <DOWN> 1 </DOWN>  </DO> </CONDITION> </SWITCH>
                             </DO>
                         </CONDITION> </SWITCH>
                     </DO>
@@ -151,17 +159,18 @@
                     <DO> 
                         <ASSIGN> <VALUE>  FALSE </VALUE> <TO>  <VAR name = tmp2 /VAR> </TO> </ASSIGN>
                         <ASSIGN> <VALUE>  FALSE </VALUE> <TO>  <VAR name = run /VAR> </TO> </ASSIGN>
-                        <ASSIGN> <VALUE>  FALSE </VALUE> <TO>  <VAR name = tmp /VAR> </TO> </ASSIGN>
                     </DO>
                 </CONDITION>
                 <CONDITION> <CHECK> <NOT> <EQ>  <VAR name = n /VAR> 0 </EQ> </NOT> </CHECK>
                     <DO> 
                         <ASSIGN> <VALUE>  <SENDDRONS> 1 </SENDDRONS> </VALUE> <TO>  <VAR name = array /VAR> </TO> </ASSIGN>
+                        <ASSIGN> <VALUE>  0 </VALUE> <TO>  <VAR name = j /VAR> </TO> </ASSIGN>                        
                         <WHILE> 
 			                <CHECK>
                                 <NOT> <EQ> <VAR name = i /VAR>  11 </EQ> </NOT>
 			                </CHECK>
 			                <DO> 
+                                <ASSIGN> <VALUE>  0 </VALUE> <TO>  <VAR name = j /VAR> </TO> </ASSIGN>
                                 <WHILE> 
 			                        <CHECK>
                                         <NOT> <EQ> <VAR name = j /VAR>  11 </EQ> </NOT>
@@ -205,7 +214,7 @@
                                                                 <INDEX> 4 </INDEX> 
                                                                 <INDEX>  5  </INDEX> 
                                                                 </DIM> </VAR>
-                                            EXIT </EQ> </CHECK>
+                                                                EXIT </EQ> </CHECK>
                                 <DO>
                                     <ASSIGN> <VALUE>  FALSE </VALUE> <TO>  <VAR name = tmp2 /VAR> </TO> </ASSIGN>
                                     <ASSIGN> <VALUE>  FALSE </VALUE> <TO>  <VAR name = run /VAR> </TO> </ASSIGN>
@@ -232,6 +241,7 @@
         </WHILE>
     </FUNC>
     <FUNC name = right_search>
+        <ASSIGN> <VALUE>  FALSE </VALUE> <TO>  <VAR name = tmp /VAR> </TO> </ASSIGN>
         <SWITCH>
             <CONDITION> <CHECK> <EQ> <VAR name =map > <DIM> 
                                                             <INDEX> <ADD> <VAR name = x /VAR> 0 </ADD></INDEX> 
@@ -269,7 +279,8 @@
                                                 </TO> 
                                 </ASSIGN>
                                 <ASSIGN> <VALUE>  <ADD> <VAR name = y /VAR> -1 </ADD> </VALUE> <TO>  <VAR name = y /VAR> </TO> </ASSIGN>
-                                <LEFT> 1 </LEFT>
+                                <SWITCH> <CONDITION> <CHECK> <VAR name = run /VAR> </CHECK>
+                                <DO> <LEFT> 1 </LEFT>  </DO> </CONDITION> </SWITCH>
                             </DO>
                         </CONDITION> </SWITCH>
                     </DO>
@@ -285,14 +296,6 @@
                     <DIMENSION> 11 </DIMENSION>
 			    </DIMENSIONS> 
 		    </VAR>
-            <VAR = i>
-                <TYPE> INT </TYPE>
-                <VALUE> 0 </VALUE>
-            </VAR>
-            <VAR = j>
-                <TYPE> INT </TYPE>
-                <VALUE> 0 </VALUE>
-            </VAR>
             <VAR = n>
                 <TYPE> INT </TYPE>
             </VAR>
@@ -331,6 +334,7 @@
                                 <NOT> <EQ> <VAR name = i /VAR>  11 </EQ> </NOT>
 			                </CHECK>
 			                <DO> 
+                                                <ASSIGN> <VALUE>  0 </VALUE> <TO>  <VAR name = j /VAR> </TO> </ASSIGN>
                                 <WHILE> 
 			                        <CHECK>
                                         <NOT> <EQ> <VAR name = j /VAR>  11 </EQ> </NOT>
@@ -401,6 +405,7 @@
         </WHILE>
     </FUNC>
     <FUNC name = bottom_search>
+        <ASSIGN> <VALUE>  FALSE </VALUE> <TO>  <VAR name = tmp /VAR> </TO> </ASSIGN>
         <SWITCH>
             <CONDITION> <CHECK> <EQ> <VAR name =map > <DIM> 
                                                             <INDEX> <ADD> <VAR name = x /VAR> 1</ADD> </INDEX> 
@@ -438,7 +443,8 @@
                                                 </TO> 
                                 </ASSIGN>
                                 <ASSIGN> <VALUE>  <ADD> <VAR name = x /VAR> -1 </ADD> </VALUE> <TO>  <VAR name = x /VAR> </TO> </ASSIGN>
-                                <UP> 1 </UP>
+                                <SWITCH> <CONDITION> <CHECK> <VAR name = run /VAR> </CHECK>
+                                    <DO>  <UP> 1 </UP>  </DO> </CONDITION> </SWITCH>
                             </DO>
                         </CONDITION> </SWITCH>
                     </DO>
@@ -454,14 +460,6 @@
                     <DIMENSION> 11 </DIMENSION>
 			    </DIMENSIONS> 
 		    </VAR>
-            <VAR = i>
-                <TYPE> INT </TYPE>
-                <VALUE> 0 </VALUE>
-            </VAR>
-            <VAR = j>
-                <TYPE> INT </TYPE>
-                <VALUE> 0 </VALUE>
-            </VAR>
             <VAR = n>
                 <TYPE> INT </TYPE>
             </VAR>
@@ -499,7 +497,8 @@
 			                <CHECK>
                                 <NOT> <EQ> <VAR name = i /VAR>  11 </EQ> </NOT>
 			                </CHECK>
-			                <DO> 
+			                <DO>
+                                                <ASSIGN> <VALUE>  0 </VALUE> <TO>  <VAR name = j /VAR> </TO> </ASSIGN> 
                                 <WHILE> 
 			                        <CHECK>
                                         <NOT> <EQ> <VAR name = j /VAR>  11 </EQ> </NOT>
@@ -570,6 +569,7 @@
         </WHILE>
     </FUNC>
     <FUNC name = left_search>
+        <ASSIGN> <VALUE>  FALSE </VALUE> <TO>  <VAR name = tmp /VAR> </TO> </ASSIGN>
         <SWITCH>
             <CONDITION> <CHECK> <EQ> <VAR name =map > <DIM> 
                                                             <INDEX> <ADD> <VAR name = y /VAR> 0 </ADD> </INDEX> 
@@ -577,7 +577,7 @@
                                                         </DIM> </VAR>
                                                         0 </EQ> </CHECK>
                     <DO>
-                        <CALL> check_top </CALL>
+                        <CALL> check_left </CALL>
                         <SWITCH> <CONDITION> <CHECK> <VAR name = tmp /VAR> </CHECK>
                              <DO> 
                                 <ASSIGN> <VALUE>  <ADD> <VAR name = y /VAR> -1 </ADD> </VALUE> <TO>  <VAR name = y /VAR> </TO> </ASSIGN>
@@ -607,7 +607,8 @@
                                                 </TO> 
                                 </ASSIGN>
                                 <ASSIGN> <VALUE>  <ADD> <VAR name = y /VAR> 1 </ADD> </VALUE> <TO>  <VAR name = y /VAR> </TO> </ASSIGN>
-                                <RIGHT> 1 </RIGHT>
+                                <SWITCH> <CONDITION> <CHECK> <VAR name = run /VAR> </CHECK>
+                                <DO>  <RIGHT> 1 </RIGHT>  </DO> </CONDITION> </SWITCH>
                             </DO>
                         </CONDITION> </SWITCH>
                     </DO>
@@ -623,14 +624,6 @@
                     <DIMENSION> 11 </DIMENSION>
 			    </DIMENSIONS> 
 		    </VAR>
-            <VAR = i>
-                <TYPE> INT </TYPE>
-                <VALUE> 0 </VALUE>
-            </VAR>
-            <VAR = j>
-                <TYPE> INT </TYPE>
-                <VALUE> 0 </VALUE>
-            </VAR>
             <VAR = n>
                 <TYPE> INT </TYPE>
             </VAR>
@@ -669,6 +662,7 @@
                                 <NOT> <EQ> <VAR name = i /VAR>  11 </EQ> </NOT>
 			                </CHECK>
 			                <DO> 
+                                <ASSIGN> <VALUE>  0 </VALUE> <TO>  <VAR name = j /VAR> </TO> </ASSIGN>
                                 <WHILE> 
 			                        <CHECK>
                                         <NOT> <EQ> <VAR name = j /VAR>  11 </EQ> </NOT>

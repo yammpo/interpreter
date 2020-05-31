@@ -1,6 +1,6 @@
 <PROGRAM>
 	<VARDECLARATION>
-		<VAR = array>
+		<VAR = array CONST = TRUE>
 			<TYPE> INT </TYPE>
 			<DIMENSIONS count = 2>       
 				<DIMENSION> 2 </DIMENSION>   
@@ -23,11 +23,24 @@
 				<DIMENSION> 4 </DIMENSION>            
 			</DIMENSIONS>
 		</VAR>
+		<VAR = check> <TYPE> INT </TYPE> </VAR>
 	</VARDECLARATION>
 	<FUNC name = main>
 		<ASSIGN> 
+			<VALUE> <VAR name = array /VAR>  </VALUE> 
+			<TO> <VAR name = array_2 /VAR>  </TO>
+		</ASSIGN>
+		<ASSIGN> 
 			<VALUE> 1 </VALUE> 
 			<TO> <VAR name = array> <DIM> <INDEX> 1 </INDEX> <INDEX> 2 </INDEX> </DIM> </VAR> </TO>
+		</ASSIGN>
+		<ASSIGN> 
+			<VALUE> 5 </VALUE> 
+			<TO> <VAR name = array_2> <DIM> <INDEX> 1 </INDEX> <INDEX> 2 </INDEX> </DIM> </VAR> </TO>
+		</ASSIGN>
+		<ASSIGN> 
+			<VALUE> <VAR name = array> <DIM> <INDEX> 1 </INDEX> <INDEX> 2 </INDEX> </DIM> </VAR> </VALUE> 
+			<TO> <VAR name = check /VAR> </TO>
 		</ASSIGN>
 	</FUNC>
 </PROGRAM>
