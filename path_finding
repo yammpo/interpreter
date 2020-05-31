@@ -1,0 +1,741 @@
+<PROGRAM>
+	<VARDECLARATION>
+        <VAR = map>
+			<TYPE> INT </TYPE>
+			<DIMENSIONS count = 2>         
+				<DIMENSION> 15 </DIMENSION>
+                <DIMENSION> 15 </DIMENSION>
+			</DIMENSIONS> 
+		</VAR>
+        <VAR = run>
+            <TYPE> BOOL </TYPE>
+            <VALUE> TRUE </VALUE>
+        </VAR>
+        <VAR = tmp>
+            <TYPE> BOOL </TYPE>
+            <VALUE> TRUE </VALUE>
+        </VAR>
+        <VAR = x>
+            <TYPE> INT </TYPE>
+            <VALUE> 3 </VALUE>
+        </VAR>
+        <VAR = y>
+            <TYPE> INT </TYPE>
+            <VALUE> 3 </VALUE>
+        </VAR>
+
+    </VARDECLARATION>
+    <FUNC name = main>
+        <VARDECLARATION>
+            <VAR = i>
+                <TYPE> INT </TYPE>
+                <VALUE> 0 </VALUE>
+            </VAR>
+            <VAR = j>
+                <TYPE> INT </TYPE>
+                <VALUE> 0 </VALUE>
+            </VAR>
+        </VARDECLARATION>
+        <WHILE> 
+			<CHECK>
+                <NOT> <EQ> <VAR name = i /VAR>  15 </EQ> </NOT>
+			</CHECK>
+			<DO> 
+                <WHILE> 
+			        <CHECK>
+                        <NOT> <EQ> <VAR name = j /VAR>  15 </EQ> </NOT>
+			        </CHECK>
+                    <DO>   
+                        <ASSIGN> <VALUE> 0 </VALUE> <TO> <VAR name =map  > <DIM> 
+                                                                            <INDEX> <VAR name = i /VAR> </INDEX> 
+                                                                            <INDEX> <VAR name = j /VAR> </INDEX> 
+                                                                        </DIM> </VAR>
+                                                    </TO>
+                        </ASSIGN>
+                        <ASSIGN> <VALUE>  <ADD> <VAR name = j /VAR> 1 </ADD> </VALUE> <TO>  <VAR name = j /VAR> </TO> </ASSIGN>
+                    </DO>
+                </WHILE>
+                <ASSIGN> <VALUE>  <ADD> <VAR name = i /VAR> 1 </ADD> </VALUE> <TO>  <VAR name = i /VAR> </TO> </ASSIGN>
+            </DO>
+        </WHILE>
+        
+        <CALL> top_search </CALL>
+        <SWITCH> <CONDITION> <CHECK> <VAR name = run /VAR> </CHECK>
+            <DO> <CALL> right_search </CALL> </DO>
+        </CONDITION> </SWITCH>
+        <SWITCH> <CONDITION> <CHECK> <VAR name = run /VAR> </CHECK>
+            <DO> <CALL> bottom_search </CALL> </DO>
+        </CONDITION> </SWITCH>
+        <SWITCH> <CONDITION> <CHECK> <VAR name = run /VAR> </CHECK>
+            <DO> <CALL> left_search </CALL> </DO>
+        </CONDITION> </SWITCH>
+    </FUNC>
+    <FUNC name = top_search>
+        <SWITCH>
+            <CONDITION> <CHECK> <EQ> <VAR name =map > <DIM> 
+                                                            <INDEX> <ADD> <VAR name = x /VAR> -1 </ADD> </INDEX> 
+                                                            <INDEX> <ADD> <VAR name = y /VAR> 0 </ADD> </INDEX> 
+                                                        </DIM> </VAR>
+                                                        0 </EQ> </CHECK>
+                    <DO>
+                        <CALL> check_top </CALL>
+                        <SWITCH> <CONDITION> <CHECK> <VAR name = tmp /VAR> </CHECK>
+                             <DO> 
+                                <ASSIGN> <VALUE>  <ADD> <VAR name = x /VAR> -1 </ADD> </VALUE> <TO>  <VAR name = x /VAR> </TO> </ASSIGN>
+                                <UP> 1 </UP>
+                                <ASSIGN> <VALUE> 1 </VALUE> <TO> <VAR name =map > <DIM> 
+                                                                            <INDEX> <VAR name = x /VAR> </INDEX> 
+                                                                            <INDEX> <VAR name = y /VAR> </INDEX> 
+                                                                        </DIM> </VAR>
+                                                    </TO> 
+                                </ASSIGN>
+                                <SWITCH> <CONDITION> <CHECK> <VAR name = run /VAR> </CHECK>
+                                    <DO> <CALL> top_search </CALL> </DO>
+                                </CONDITION> </SWITCH>
+                                <SWITCH> <CONDITION> <CHECK> <VAR name = run /VAR> </CHECK>
+                                    <DO> <CALL> right_search </CALL> </DO>
+                                </CONDITION> </SWITCH>
+                                <SWITCH> <CONDITION> <CHECK> <VAR name = run /VAR> </CHECK>
+                                    <DO> <CALL> bottom_search </CALL> </DO>
+                                </CONDITION> </SWITCH>
+                                <SWITCH> <CONDITION> <CHECK> <VAR name = run /VAR> </CHECK>
+                                    <DO> <CALL> left_search </CALL> </DO>
+                                </CONDITION> </SWITCH>
+                                <ASSIGN> <VALUE> 2 </VALUE> <TO> <VAR name =map > <DIM> 
+                                                                    <INDEX> <VAR name = x /VAR> </INDEX> 
+                                                                    <INDEX> <VAR name = y /VAR> </INDEX> 
+                                                                </DIM> </VAR>
+                                                </TO> 
+                                </ASSIGN>
+                                <ASSIGN> <VALUE>  <ADD> <VAR name = x /VAR> 1 </ADD> </VALUE> <TO>  <VAR name = x /VAR> </TO> </ASSIGN>
+                                <DOWN> 1 </DOWN>
+                            </DO>
+                        </CONDITION> </SWITCH>
+                    </DO>
+            </CONDITION>
+        </SWITCH>
+    </FUNC>   
+    <FUNC name = check_top>
+        <VARDECLARATION>
+            <VAR = array>
+			    <TYPE> CELL </TYPE>
+			    <DIMENSIONS count = 2>         
+				    <DIMENSION> 11 </DIMENSION>
+                    <DIMENSION> 11 </DIMENSION>
+			    </DIMENSIONS> 
+		    </VAR>
+            <VAR = n>
+                <TYPE> INT </TYPE>
+            </VAR>
+            <VAR = tmp2>
+                <TYPE> BOOL </TYPE>
+                <VALUE> TRUE</VALUE>
+            </VAR>
+            <VAR = i>
+                <TYPE> INT </TYPE>
+                <VALUE> 0 </VALUE>
+             </VAR>
+            <VAR = j>
+                <TYPE> INT </TYPE>
+                <VALUE> 0 </VALUE>
+            </VAR>
+        </VARDECLARATION>
+        <WHILE> 
+			<CHECK>
+                <VAR name = tmp2 /VAR>
+			</CHECK>
+		<DO> 
+            <GETDRONSCOUNT> <VAR name = n /VAR> </GETDRONSCOUNT>   
+            <SWITCH> 
+                <CONDITION> <CHECK> <EQ> <VAR name = n /VAR> 0 </EQ> </CHECK>
+                    <DO> 
+                        <ASSIGN> <VALUE>  FALSE </VALUE> <TO>  <VAR name = tmp2 /VAR> </TO> </ASSIGN>
+                        <ASSIGN> <VALUE>  FALSE </VALUE> <TO>  <VAR name = run /VAR> </TO> </ASSIGN>
+                        <ASSIGN> <VALUE>  FALSE </VALUE> <TO>  <VAR name = tmp /VAR> </TO> </ASSIGN>
+                    </DO>
+                </CONDITION>
+                <CONDITION> <CHECK> <NOT> <EQ>  <VAR name = n /VAR> 0 </EQ> </NOT> </CHECK>
+                    <DO> 
+                        <ASSIGN> <VALUE>  <SENDDRONS> 1 </SENDDRONS> </VALUE> <TO>  <VAR name = array /VAR> </TO> </ASSIGN>
+                        <WHILE> 
+			                <CHECK>
+                                <NOT> <EQ> <VAR name = i /VAR>  11 </EQ> </NOT>
+			                </CHECK>
+			                <DO> 
+                                <WHILE> 
+			                        <CHECK>
+                                        <NOT> <EQ> <VAR name = j /VAR>  11 </EQ> </NOT>
+			                        </CHECK>
+                                    <DO>
+                                        <SWITCH>
+                                        <CONDITION> <CHECK> <EQ> <VAR name =array > <DIM> 
+                                                                    <INDEX> <VAR name = i /VAR> </INDEX> 
+                                                                    <INDEX> <VAR name = j /VAR> </INDEX> 
+                                                                </DIM> </VAR>
+                                                                WALL </EQ> </CHECK>
+                                        <DO>
+                                        <ASSIGN> <VALUE> 2 </VALUE> <TO> <VAR name =map > <DIM> 
+                                                                            <INDEX> <ADD> <VAR name = i /VAR> <VAR name = x /VAR> -5 </ADD> </INDEX> 
+                                                                            <INDEX> <ADD> <VAR name = j /VAR> <VAR name = y /VAR> -5 </ADD> </INDEX> 
+                                                                        </DIM> </VAR>
+                                                    </TO>
+                                        </ASSIGN>
+                                        </DO>
+                                        </CONDITION> </SWITCH>
+                                        <ASSIGN> <VALUE>  <ADD> <VAR name = j /VAR> 1 </ADD> </VALUE> <TO>  <VAR name = j /VAR> </TO> </ASSIGN>
+                                    </DO>
+                                </WHILE>
+                                <ASSIGN> <VALUE>  <ADD> <VAR name = i /VAR> 1 </ADD> </VALUE> <TO>  <VAR name = i /VAR> </TO> </ASSIGN>
+                            </DO>
+                        </WHILE>
+                        <SWITCH>
+                            <CONDITION> 
+                                <CHECK> <EQ> <VAR name =array > <DIM> 
+                                                                <INDEX> 4  </INDEX> 
+                                                                <INDEX>  5  </INDEX> 
+                                                                </DIM> </VAR>
+                                            EMPTY </EQ> </CHECK>
+                                <DO>
+                                    <ASSIGN> <VALUE>  FALSE </VALUE> <TO>  <VAR name = tmp2 /VAR> </TO> </ASSIGN>
+                                    <ASSIGN> <VALUE>  TRUE </VALUE> <TO>  <VAR name = tmp /VAR> </TO> </ASSIGN>
+                                </DO>
+                            </CONDITION>
+                            <CONDITION> 
+                                <CHECK> <EQ> <VAR name =array > <DIM> 
+                                                                <INDEX> 4 </INDEX> 
+                                                                <INDEX>  5  </INDEX> 
+                                                                </DIM> </VAR>
+                                            EXIT </EQ> </CHECK>
+                                <DO>
+                                    <ASSIGN> <VALUE>  FALSE </VALUE> <TO>  <VAR name = tmp2 /VAR> </TO> </ASSIGN>
+                                    <ASSIGN> <VALUE>  FALSE </VALUE> <TO>  <VAR name = run /VAR> </TO> </ASSIGN>
+                                    <ASSIGN> <VALUE>  FALSE </VALUE> <TO>  <VAR name = tmp /VAR> </TO> </ASSIGN>
+                                    <UP> 1</UP>
+                                </DO>
+                            </CONDITION>
+                            <CONDITION> 
+                                <CHECK> <EQ> <VAR name =array > <DIM> 
+                                                                <INDEX>  4 </INDEX> 
+                                                                <INDEX> 5  </INDEX> 
+                                                                </DIM> </VAR>
+                                            WALL </EQ> </CHECK>
+                                <DO>
+                                    <ASSIGN> <VALUE>  FALSE </VALUE> <TO>  <VAR name = tmp2 /VAR> </TO> </ASSIGN>
+                                    <ASSIGN> <VALUE>  FALSE </VALUE> <TO>  <VAR name = tmp /VAR> </TO> </ASSIGN>
+                                </DO>
+                            </CONDITION>  
+                        </SWITCH> 
+                    </DO>
+                </CONDITION>
+            </SWITCH>
+        </DO>
+        </WHILE>
+    </FUNC>
+    <FUNC name = right_search>
+        <SWITCH>
+            <CONDITION> <CHECK> <EQ> <VAR name =map > <DIM> 
+                                                            <INDEX> <ADD> <VAR name = x /VAR> 0 </ADD></INDEX> 
+                                                            <INDEX> <ADD> <VAR name = y /VAR> 1 </ADD> </INDEX> 
+                                                        </DIM> </VAR>
+                                                        0 </EQ> </CHECK>
+                    <DO>
+                        <CALL> check_right </CALL>
+                        <SWITCH> <CONDITION> <CHECK> <VAR name = tmp /VAR> </CHECK>
+                             <DO> 
+                                <ASSIGN> <VALUE>  <ADD> <VAR name = y /VAR> 1 </ADD> </VALUE> <TO>  <VAR name = y /VAR> </TO> </ASSIGN>
+                                <RIGHT> 1 </RIGHT>
+                                <ASSIGN> <VALUE> 1 </VALUE> <TO> <VAR name =map > <DIM> 
+                                                                            <INDEX> <VAR name = x /VAR> </INDEX> 
+                                                                            <INDEX> <VAR name = y /VAR> </INDEX> 
+                                                                        </DIM> </VAR>
+                                                    </TO> 
+                                </ASSIGN>
+                                <SWITCH> <CONDITION> <CHECK> <VAR name = run /VAR> </CHECK>
+                                    <DO> <CALL> top_search </CALL> </DO>
+                                </CONDITION> </SWITCH>
+                                <SWITCH> <CONDITION> <CHECK> <VAR name = run /VAR> </CHECK>
+                                    <DO> <CALL> right_search </CALL> </DO>
+                                </CONDITION> </SWITCH>
+                                <SWITCH> <CONDITION> <CHECK> <VAR name = run /VAR> </CHECK>
+                                    <DO> <CALL> bottom_search </CALL> </DO>
+                                </CONDITION> </SWITCH>
+                                <SWITCH> <CONDITION> <CHECK> <VAR name = run /VAR> </CHECK>
+                                    <DO> <CALL> left_search </CALL> </DO>
+                                </CONDITION> </SWITCH>
+                                <ASSIGN> <VALUE> 2 </VALUE> <TO> <VAR name =map > <DIM> 
+                                                                    <INDEX> <VAR name = x /VAR> </INDEX> 
+                                                                    <INDEX> <VAR name = y /VAR> </INDEX> 
+                                                                </DIM> </VAR>
+                                                </TO> 
+                                </ASSIGN>
+                                <ASSIGN> <VALUE>  <ADD> <VAR name = y /VAR> -1 </ADD> </VALUE> <TO>  <VAR name = y /VAR> </TO> </ASSIGN>
+                                <LEFT> 1 </LEFT>
+                            </DO>
+                        </CONDITION> </SWITCH>
+                    </DO>
+            </CONDITION>
+        </SWITCH>
+    </FUNC>   
+    <FUNC name = check_right>
+        <VARDECLARATION>
+            <VAR = array>
+			    <TYPE> CELL </TYPE>
+			    <DIMENSIONS count = 2>         
+				    <DIMENSION> 11 </DIMENSION>
+                    <DIMENSION> 11 </DIMENSION>
+			    </DIMENSIONS> 
+		    </VAR>
+            <VAR = i>
+                <TYPE> INT </TYPE>
+                <VALUE> 0 </VALUE>
+            </VAR>
+            <VAR = j>
+                <TYPE> INT </TYPE>
+                <VALUE> 0 </VALUE>
+            </VAR>
+            <VAR = n>
+                <TYPE> INT </TYPE>
+            </VAR>
+            <VAR = tmp2>
+                <TYPE> BOOL </TYPE>
+                <VALUE> TRUE</VALUE>
+            </VAR>
+            <VAR = i>
+                <TYPE> INT </TYPE>
+                <VALUE> 0 </VALUE>
+             </VAR>
+            <VAR = j>
+                <TYPE> INT </TYPE>
+                <VALUE> 0 </VALUE>
+            </VAR>
+        </VARDECLARATION>
+        <WHILE> 
+			<CHECK>
+                <VAR name = tmp2 /VAR>
+			</CHECK>
+		<DO> 
+            <GETDRONSCOUNT> <VAR name = n /VAR> </GETDRONSCOUNT>   
+            <SWITCH> 
+                <CONDITION> <CHECK> <EQ> <VAR name = n /VAR> 0 </EQ> </CHECK>
+                    <DO> 
+                        <ASSIGN> <VALUE>  FALSE </VALUE> <TO>  <VAR name = tmp2 /VAR> </TO> </ASSIGN>
+                        <ASSIGN> <VALUE>  FALSE </VALUE> <TO>  <VAR name = run /VAR> </TO> </ASSIGN>
+                        <ASSIGN> <VALUE>  FALSE </VALUE> <TO>  <VAR name = tmp /VAR> </TO> </ASSIGN>
+                    </DO>
+                </CONDITION>
+                <CONDITION> <CHECK> <NOT> <EQ>  <VAR name = n /VAR> 0 </EQ> </NOT> </CHECK>
+                    <DO> 
+                        <ASSIGN> <VALUE>  <SENDDRONS> 1 </SENDDRONS> </VALUE> <TO>  <VAR name = array /VAR> </TO> </ASSIGN>
+                        <WHILE> 
+			                <CHECK>
+                                <NOT> <EQ> <VAR name = i /VAR>  11 </EQ> </NOT>
+			                </CHECK>
+			                <DO> 
+                                <WHILE> 
+			                        <CHECK>
+                                        <NOT> <EQ> <VAR name = j /VAR>  11 </EQ> </NOT>
+			                        </CHECK>
+                                    <DO>
+                                        <SWITCH>
+                                        <CONDITION> <CHECK> <EQ> <VAR name =array > <DIM> 
+                                                                    <INDEX> <VAR name = i /VAR> </INDEX> 
+                                                                    <INDEX> <VAR name = j /VAR> </INDEX> 
+                                                                </DIM> </VAR>
+                                                                 WALL </EQ> </CHECK>
+                                        <DO>
+                                        <ASSIGN> <VALUE> 2 </VALUE> <TO> <VAR name =map > <DIM> 
+                                                                            <INDEX> <ADD> <VAR name = i /VAR> <VAR name = x /VAR> -5 </ADD> </INDEX> 
+                                                                            <INDEX> <ADD> <VAR name = j /VAR> <VAR name = y /VAR> -5 </ADD> </INDEX> 
+                                                                        </DIM> </VAR>
+                                                    </TO>
+                                        </ASSIGN>
+                                        </DO>
+                                        </CONDITION> </SWITCH>
+                                        <ASSIGN> <VALUE>  <ADD> <VAR name = j /VAR> 1 </ADD> </VALUE> <TO>  <VAR name = j /VAR> </TO> </ASSIGN>
+                                    </DO>
+                                </WHILE>
+                                <ASSIGN> <VALUE>  <ADD> <VAR name = i /VAR> 1 </ADD> </VALUE> <TO>  <VAR name = i /VAR> </TO> </ASSIGN>
+                            </DO>
+                        </WHILE>
+                        <SWITCH>
+                            <CONDITION> 
+                                <CHECK> <EQ> <VAR name =array > <DIM> 
+                                                                <INDEX>  5  </INDEX> 
+                                                                <INDEX> 6  </INDEX> 
+                                                                </DIM> </VAR>
+                                            EMPTY </EQ> </CHECK>
+                                <DO>
+                                    <ASSIGN> <VALUE>  FALSE </VALUE> <TO>  <VAR name = tmp2 /VAR> </TO> </ASSIGN>
+                                    <ASSIGN> <VALUE>  TRUE </VALUE> <TO>  <VAR name = tmp /VAR> </TO> </ASSIGN>
+                                </DO>
+                            </CONDITION>
+                            <CONDITION> 
+                                <CHECK> <EQ> <VAR name =array > <DIM> 
+                                                                <INDEX>  5  </INDEX> 
+                                                                <INDEX>  6 </INDEX> 
+                                                                </DIM> </VAR>
+                                            EXIT </EQ> </CHECK>
+                                <DO>
+                                    <ASSIGN> <VALUE>  FALSE </VALUE> <TO>  <VAR name = tmp2 /VAR> </TO> </ASSIGN>
+                                    <ASSIGN> <VALUE>  FALSE </VALUE> <TO>  <VAR name = run /VAR> </TO> </ASSIGN>
+                                    <ASSIGN> <VALUE>  FALSE </VALUE> <TO>  <VAR name = tmp /VAR> </TO> </ASSIGN>
+                                    <RIGHT> 1</RIGHT>
+                                </DO>
+                            </CONDITION>
+                            <CONDITION> 
+                                <CHECK> <EQ> <VAR name =array > <DIM> 
+                                                                <INDEX> 5  </INDEX> 
+                                                                <INDEX>  6  </INDEX> 
+                                                                </DIM> </VAR>
+                                            WALL </EQ> </CHECK>
+                                <DO>
+                                    <ASSIGN> <VALUE>  FALSE </VALUE> <TO>  <VAR name = tmp2 /VAR> </TO> </ASSIGN>
+                                    <ASSIGN> <VALUE>  FALSE </VALUE> <TO>  <VAR name = tmp /VAR> </TO> </ASSIGN>
+                                </DO>
+                            </CONDITION>  
+                        </SWITCH> 
+                    </DO>
+                </CONDITION>
+            </SWITCH>
+        </DO>
+        </WHILE>
+    </FUNC>
+    <FUNC name = bottom_search>
+        <SWITCH>
+            <CONDITION> <CHECK> <EQ> <VAR name =map > <DIM> 
+                                                            <INDEX> <ADD> <VAR name = x /VAR> 1</ADD> </INDEX> 
+                                                            <INDEX> <ADD> <VAR name = y /VAR> 0 </ADD> </INDEX> 
+                                                        </DIM> </VAR>
+                                                        0 </EQ> </CHECK>
+                    <DO>
+                        <CALL> check_bottom </CALL>
+                        <SWITCH> <CONDITION> <CHECK> <VAR name = tmp /VAR> </CHECK>
+                             <DO> 
+                                <ASSIGN> <VALUE>  <ADD> <VAR name = x /VAR> 1 </ADD> </VALUE> <TO>  <VAR name = x /VAR> </TO> </ASSIGN>
+                                <DOWN> 1 </DOWN>
+                                <ASSIGN> <VALUE> 1 </VALUE> <TO> <VAR name =map > <DIM> 
+                                                                            <INDEX> <VAR name = x /VAR> </INDEX> 
+                                                                            <INDEX> <VAR name = y /VAR> </INDEX> 
+                                                                        </DIM> </VAR>
+                                                    </TO> 
+                                </ASSIGN>
+                                <SWITCH> <CONDITION> <CHECK> <VAR name = run /VAR> </CHECK>
+                                    <DO> <CALL> top_search </CALL> </DO>
+                                </CONDITION> </SWITCH>
+                                <SWITCH> <CONDITION> <CHECK> <VAR name = run /VAR> </CHECK>
+                                    <DO> <CALL> right_search </CALL> </DO>
+                                </CONDITION> </SWITCH>
+                                <SWITCH> <CONDITION> <CHECK> <VAR name = run /VAR> </CHECK>
+                                    <DO> <CALL> bottom_search </CALL> </DO>
+                                </CONDITION> </SWITCH>
+                                <SWITCH> <CONDITION> <CHECK> <VAR name = run /VAR> </CHECK>
+                                    <DO> <CALL> left_search </CALL> </DO>
+                                </CONDITION> </SWITCH>
+                                <ASSIGN> <VALUE> 2 </VALUE> <TO> <VAR name =map > <DIM> 
+                                                                    <INDEX> <VAR name = x /VAR> </INDEX> 
+                                                                    <INDEX> <VAR name = y /VAR> </INDEX> 
+                                                                </DIM> </VAR>
+                                                </TO> 
+                                </ASSIGN>
+                                <ASSIGN> <VALUE>  <ADD> <VAR name = x /VAR> -1 </ADD> </VALUE> <TO>  <VAR name = x /VAR> </TO> </ASSIGN>
+                                <UP> 1 </UP>
+                            </DO>
+                        </CONDITION> </SWITCH>
+                    </DO>
+            </CONDITION>
+        </SWITCH>
+    </FUNC>   
+    <FUNC name = check_bottom>
+        <VARDECLARATION>
+            <VAR = array>
+			    <TYPE> CELL </TYPE>
+			    <DIMENSIONS count = 2>         
+				    <DIMENSION> 11 </DIMENSION>
+                    <DIMENSION> 11 </DIMENSION>
+			    </DIMENSIONS> 
+		    </VAR>
+            <VAR = i>
+                <TYPE> INT </TYPE>
+                <VALUE> 0 </VALUE>
+            </VAR>
+            <VAR = j>
+                <TYPE> INT </TYPE>
+                <VALUE> 0 </VALUE>
+            </VAR>
+            <VAR = n>
+                <TYPE> INT </TYPE>
+            </VAR>
+            <VAR = tmp2>
+                <TYPE> BOOL </TYPE>
+                <VALUE> TRUE</VALUE>
+            </VAR>
+            <VAR = i>
+                <TYPE> INT </TYPE>
+                <VALUE> 0 </VALUE>
+             </VAR>
+            <VAR = j>
+                <TYPE> INT </TYPE>
+                <VALUE> 0 </VALUE>
+            </VAR>
+        </VARDECLARATION>
+        <WHILE> 
+			<CHECK>
+                <VAR name = tmp2 /VAR>
+			</CHECK>
+		<DO> 
+            <GETDRONSCOUNT> <VAR name = n /VAR> </GETDRONSCOUNT>   
+            <SWITCH> 
+                <CONDITION> <CHECK> <EQ> <VAR name = n /VAR> 0 </EQ> </CHECK>
+                    <DO> 
+                        <ASSIGN> <VALUE>  FALSE </VALUE> <TO>  <VAR name = tmp2 /VAR> </TO> </ASSIGN>
+                        <ASSIGN> <VALUE>  FALSE </VALUE> <TO>  <VAR name = run /VAR> </TO> </ASSIGN>
+                        <ASSIGN> <VALUE>  FALSE </VALUE> <TO>  <VAR name = tmp /VAR> </TO> </ASSIGN>
+                    </DO>
+                </CONDITION>
+                <CONDITION> <CHECK> <NOT>  <EQ>  <VAR name = n /VAR> 0 </EQ> </NOT> </CHECK>
+                    <DO> 
+                        <ASSIGN> <VALUE>  <SENDDRONS> 1 </SENDDRONS> </VALUE> <TO>  <VAR name = array /VAR> </TO> </ASSIGN>
+                        <WHILE> 
+			                <CHECK>
+                                <NOT> <EQ> <VAR name = i /VAR>  11 </EQ> </NOT>
+			                </CHECK>
+			                <DO> 
+                                <WHILE> 
+			                        <CHECK>
+                                        <NOT> <EQ> <VAR name = j /VAR>  11 </EQ> </NOT>
+			                        </CHECK>
+                                    <DO>
+                                        <SWITCH>
+                                        <CONDITION> <CHECK> <EQ> <VAR name =array > <DIM> 
+                                                                    <INDEX> <VAR name = i /VAR> </INDEX> 
+                                                                    <INDEX> <VAR name = j /VAR> </INDEX> 
+                                                                </DIM> </VAR>
+                                                                 WALL </EQ> </CHECK>
+                                        <DO>
+                                        <ASSIGN> <VALUE> 2 </VALUE> <TO> <VAR name =map > <DIM> 
+                                                                            <INDEX> <ADD> <VAR name = i /VAR> <VAR name = x /VAR> -5 </ADD> </INDEX> 
+                                                                            <INDEX> <ADD> <VAR name = j /VAR> <VAR name = y /VAR> -5 </ADD> </INDEX> 
+                                                                        </DIM> </VAR>
+                                                    </TO>
+                                        </ASSIGN>
+                                        </DO>
+                                        </CONDITION> </SWITCH>
+                                        <ASSIGN> <VALUE>  <ADD> <VAR name = j /VAR> 1 </ADD> </VALUE> <TO>  <VAR name = j /VAR> </TO> </ASSIGN>
+                                    </DO>
+                                </WHILE>
+                                <ASSIGN> <VALUE>  <ADD> <VAR name = i /VAR> 1 </ADD> </VALUE> <TO>  <VAR name = i /VAR> </TO> </ASSIGN>
+                            </DO>
+                        </WHILE>
+                        <SWITCH>
+                            <CONDITION> 
+                                <CHECK> <EQ> <VAR name =array > <DIM> 
+                                                                <INDEX> 6 </INDEX> 
+                                                                <INDEX> 5 </INDEX> 
+                                                                </DIM> </VAR>
+                                            EMPTY </EQ> </CHECK>
+                                <DO>
+                                    <ASSIGN> <VALUE>  FALSE </VALUE> <TO>  <VAR name = tmp2 /VAR> </TO> </ASSIGN>
+                                    <ASSIGN> <VALUE>  TRUE </VALUE> <TO>  <VAR name = tmp /VAR> </TO> </ASSIGN>
+                                </DO>
+                            </CONDITION>
+                            <CONDITION> 
+                                <CHECK> <EQ> <VAR name =array > <DIM> 
+                                                                <INDEX> 6  </INDEX> 
+                                                                <INDEX>  5  </INDEX> 
+                                                                </DIM> </VAR>
+                                            EXIT </EQ> </CHECK>
+                                <DO>
+                                    <ASSIGN> <VALUE>  FALSE </VALUE> <TO>  <VAR name = tmp2 /VAR> </TO> </ASSIGN>
+                                    <ASSIGN> <VALUE>  FALSE </VALUE> <TO>  <VAR name = run /VAR> </TO> </ASSIGN>
+                                    <ASSIGN> <VALUE>  FALSE </VALUE> <TO>  <VAR name = tmp /VAR> </TO> </ASSIGN>
+                                    <DOWN> 1</DOWN>
+                                </DO>
+                            </CONDITION>
+                            <CONDITION> 
+                                <CHECK> <EQ> <VAR name =array > <DIM> 
+                                                                <INDEX>  6  </INDEX> 
+                                                                <INDEX> 5 </INDEX> 
+                                                                </DIM> </VAR>
+                                            WALL </EQ> </CHECK>
+                                <DO>
+                                    <ASSIGN> <VALUE>  FALSE </VALUE> <TO>  <VAR name = tmp2 /VAR> </TO> </ASSIGN>
+                                    <ASSIGN> <VALUE>  FALSE </VALUE> <TO>  <VAR name = tmp /VAR> </TO> </ASSIGN>
+                                </DO>
+                            </CONDITION>  
+                        </SWITCH> 
+                    </DO>
+                </CONDITION>
+            </SWITCH>
+        </DO>
+        </WHILE>
+    </FUNC>
+    <FUNC name = left_search>
+        <SWITCH>
+            <CONDITION> <CHECK> <EQ> <VAR name =map > <DIM> 
+                                                            <INDEX> <ADD> <VAR name = y /VAR> 0 </ADD> </INDEX> 
+                                                            <INDEX> <ADD> <VAR name = y /VAR> -1 </ADD> </INDEX> 
+                                                        </DIM> </VAR>
+                                                        0 </EQ> </CHECK>
+                    <DO>
+                        <CALL> check_top </CALL>
+                        <SWITCH> <CONDITION> <CHECK> <VAR name = tmp /VAR> </CHECK>
+                             <DO> 
+                                <ASSIGN> <VALUE>  <ADD> <VAR name = y /VAR> -1 </ADD> </VALUE> <TO>  <VAR name = y /VAR> </TO> </ASSIGN>
+                                <LEFT> 1 </LEFT>
+                                <ASSIGN> <VALUE> 1 </VALUE> <TO> <VAR name =map > <DIM> 
+                                                                            <INDEX> <VAR name = x /VAR> </INDEX> 
+                                                                            <INDEX> <VAR name = y /VAR> </INDEX> 
+                                                                        </DIM> </VAR>
+                                                    </TO> 
+                                </ASSIGN>
+                                <SWITCH> <CONDITION> <CHECK> <VAR name = run /VAR> </CHECK>
+                                    <DO> <CALL> top_search </CALL> </DO>
+                                </CONDITION> </SWITCH>
+                                <SWITCH> <CONDITION> <CHECK> <VAR name = run /VAR> </CHECK>
+                                    <DO> <CALL> right_search </CALL> </DO>
+                                </CONDITION> </SWITCH>
+                                <SWITCH> <CONDITION> <CHECK> <VAR name = run /VAR> </CHECK>
+                                    <DO> <CALL> bottom_search </CALL> </DO>
+                                </CONDITION> </SWITCH>
+                                <SWITCH> <CONDITION> <CHECK> <VAR name = run /VAR> </CHECK>
+                                    <DO> <CALL> left_search </CALL> </DO>
+                                </CONDITION> </SWITCH>
+                                <ASSIGN> <VALUE> 2 </VALUE> <TO> <VAR name =map > <DIM> 
+                                                                    <INDEX> <VAR name = x /VAR> </INDEX> 
+                                                                    <INDEX> <VAR name = y /VAR> </INDEX> 
+                                                                </DIM> </VAR>
+                                                </TO> 
+                                </ASSIGN>
+                                <ASSIGN> <VALUE>  <ADD> <VAR name = y /VAR> 1 </ADD> </VALUE> <TO>  <VAR name = y /VAR> </TO> </ASSIGN>
+                                <RIGHT> 1 </RIGHT>
+                            </DO>
+                        </CONDITION> </SWITCH>
+                    </DO>
+            </CONDITION>
+        </SWITCH>
+    </FUNC>   
+    <FUNC name = check_left>
+        <VARDECLARATION>
+            <VAR = array>
+			    <TYPE> CELL </TYPE>
+			    <DIMENSIONS count = 2>         
+				    <DIMENSION> 11 </DIMENSION>
+                    <DIMENSION> 11 </DIMENSION>
+			    </DIMENSIONS> 
+		    </VAR>
+            <VAR = i>
+                <TYPE> INT </TYPE>
+                <VALUE> 0 </VALUE>
+            </VAR>
+            <VAR = j>
+                <TYPE> INT </TYPE>
+                <VALUE> 0 </VALUE>
+            </VAR>
+            <VAR = n>
+                <TYPE> INT </TYPE>
+            </VAR>
+            <VAR = tmp2>
+                <TYPE> BOOL </TYPE>
+                <VALUE> TRUE</VALUE>
+            </VAR>
+            <VAR = i>
+                <TYPE> INT </TYPE>
+                <VALUE> 0 </VALUE>
+             </VAR>
+            <VAR = j>
+                <TYPE> INT </TYPE>
+                <VALUE> 0 </VALUE>
+            </VAR>
+        </VARDECLARATION>
+        <WHILE> 
+			<CHECK>
+                <VAR name = tmp2 /VAR>
+			</CHECK>
+		<DO> 
+            <GETDRONSCOUNT> <VAR name = n /VAR> </GETDRONSCOUNT>   
+            <SWITCH> 
+                <CONDITION> <CHECK> <EQ> <VAR name = n /VAR> 0 </EQ> </CHECK>
+                    <DO> 
+                        <ASSIGN> <VALUE>  FALSE </VALUE> <TO>  <VAR name = tmp2 /VAR> </TO> </ASSIGN>
+                        <ASSIGN> <VALUE>  FALSE </VALUE> <TO>  <VAR name = run /VAR> </TO> </ASSIGN>
+                        <ASSIGN> <VALUE>  FALSE </VALUE> <TO>  <VAR name = tmp /VAR> </TO> </ASSIGN>
+                    </DO>
+                </CONDITION>
+                <CONDITION> <CHECK> <NOT>  <EQ>  <VAR name = n /VAR> 0 </EQ> </NOT> </CHECK>
+                    <DO> 
+                        <ASSIGN> <VALUE>  <SENDDRONS> 1 </SENDDRONS> </VALUE> <TO>  <VAR name = array /VAR> </TO> </ASSIGN>
+                        <WHILE> 
+			                <CHECK>
+                                <NOT> <EQ> <VAR name = i /VAR>  11 </EQ> </NOT>
+			                </CHECK>
+			                <DO> 
+                                <WHILE> 
+			                        <CHECK>
+                                        <NOT> <EQ> <VAR name = j /VAR>  11 </EQ> </NOT>
+			                        </CHECK>
+                                    <DO>
+                                        <SWITCH>
+                                        <CONDITION> <CHECK> <EQ> <VAR name =array > <DIM> 
+                                                                    <INDEX> <VAR name = i /VAR> </INDEX> 
+                                                                    <INDEX> <VAR name = j /VAR> </INDEX> 
+                                                                </DIM> </VAR>
+                                                                 WALL </EQ> </CHECK>
+                                        <DO>
+                                        <ASSIGN> <VALUE> 2 </VALUE> <TO> <VAR name =map > <DIM> 
+                                                                            <INDEX> <ADD> <VAR name = i /VAR> <VAR name = x /VAR> -5 </ADD> </INDEX> 
+                                                                            <INDEX> <ADD> <VAR name = j /VAR> <VAR name = y /VAR> -5 </ADD> </INDEX> 
+                                                                        </DIM> </VAR>
+                                                    </TO>
+                                        </ASSIGN>
+                                        </DO>
+                                        </CONDITION> </SWITCH>
+                                        <ASSIGN> <VALUE>  <ADD> <VAR name = j /VAR> 1 </ADD> </VALUE> <TO>  <VAR name = j /VAR> </TO> </ASSIGN>
+                                    </DO>
+                                </WHILE>
+                                <ASSIGN> <VALUE>  <ADD> <VAR name = i /VAR> 1 </ADD> </VALUE> <TO>  <VAR name = i /VAR> </TO> </ASSIGN>
+                            </DO>
+                        </WHILE>
+                        <SWITCH>
+                            <CONDITION> 
+                                <CHECK> <EQ> <VAR name =array > <DIM> 
+                                                                <INDEX> 5 </INDEX> 
+                                                                <INDEX>  4  </INDEX> 
+                                                                </DIM> </VAR>
+                                            EMPTY </EQ> </CHECK>
+                                <DO>
+                                    <ASSIGN> <VALUE>  FALSE </VALUE> <TO>  <VAR name = tmp2 /VAR> </TO> </ASSIGN>
+                                    <ASSIGN> <VALUE>  TRUE </VALUE> <TO>  <VAR name = tmp /VAR> </TO> </ASSIGN>
+                                </DO>
+                            </CONDITION>
+                            <CONDITION> 
+                                <CHECK> <EQ> <VAR name =array > <DIM> 
+                                                                <INDEX>  5  </INDEX> 
+                                                                <INDEX>  4  </INDEX> 
+                                                                </DIM> </VAR>
+                                            EXIT </EQ> </CHECK>
+                                <DO>
+                                    <ASSIGN> <VALUE>  FALSE </VALUE> <TO>  <VAR name = tmp2 /VAR> </TO> </ASSIGN>
+                                    <ASSIGN> <VALUE>  FALSE </VALUE> <TO>  <VAR name = run /VAR> </TO> </ASSIGN>
+                                    <ASSIGN> <VALUE>  FALSE </VALUE> <TO>  <VAR name = tmp /VAR> </TO> </ASSIGN>
+                                    <LEFT> 1</LEFT>
+                                </DO>
+                            </CONDITION>
+                            <CONDITION> 
+                                <CHECK> <EQ> <VAR name =array > <DIM> 
+                                                                <INDEX> 5 </INDEX> 
+                                                                <INDEX>   4  </INDEX> 
+                                                                </DIM> </VAR>
+                                            WALL </EQ> </CHECK>
+                                <DO>
+                                    <ASSIGN> <VALUE>  FALSE </VALUE> <TO>  <VAR name = tmp2 /VAR> </TO> </ASSIGN>
+                                    <ASSIGN> <VALUE>  FALSE </VALUE> <TO>  <VAR name = tmp /VAR> </TO> </ASSIGN>
+                                </DO>
+                            </CONDITION>  
+                        </SWITCH> 
+                    </DO>
+                </CONDITION>
+            </SWITCH>
+        </DO>
+        </WHILE>
+    </FUNC>
+</PROGRAM>

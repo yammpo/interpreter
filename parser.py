@@ -275,11 +275,12 @@ class Parser():
 		else:
 			p[0] = SyntaxTreeNode('expressions', children=[p[1], p[2]])
 
-	def p_expression(self, p): #добавить senddrons
+	def p_expression(self, p):
 		'''expression : variable
 		| const
 		| math
-		| empty'''
+		| empty
+		| senddrons'''
 		p[0] = p[1]
 
 	def p_const(self, p): 
@@ -304,13 +305,16 @@ class Parser():
 		| EQ_START expressions EQ_END
 		| NOT_START expression NOT_END'''
 		p[0] = SyntaxTreeNode('math', value=p[1], children=p[2], lineno=p.lineno(1), lexpos=p.lexpos(1))
-		
+	
+	def p_senddrons(self,p):
+		'''senddrons : SENDDRONS_START expression SENDDRONS_END'''
+		p[0] = SyntaxTreeNode('senddrons', value=p[1], children=p[2], lineno=p.lineno(1), lexpos=p.lexpos(1))
+	
 	def p_operator(self, p): 
 		'''operator : LEFT_START expression LEFT_END
 		| RIGHT_START expression RIGHT_END
 		| UP_START expression UP_END
 		| DOWN_START expression DOWN_END
-		| SENDDRONS_START expression SENDDRONS_END
 		| GETDRONSCOUNT_START variable GETDRONSCOUNT_END'''
 		p[0] = SyntaxTreeNode('operator', value=p[1], children=p[2], lineno=p.lineno(1), lexpos=p.lexpos(1))
 

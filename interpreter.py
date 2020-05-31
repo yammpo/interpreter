@@ -1,7 +1,7 @@
 import sys
 import parser
-import random
 from typing import List, Optional, Union
+import robot
 	
 class Variable:
 	#перегрузка операторов:
@@ -57,13 +57,14 @@ class Variable:
 		
 class Interpreter:
 
-	def __init__(self):
+	def __init__(self, filename):
 		self.parser = parser.Parser()
 		self.program = None
 		self.symbol_table = [dict()]
 		self.functions = dict()
 		self.tree = None
 		self.scope = 0
+		self.robot = robot.Robot(filename)
 
 	def interpreter(self, prog=None):
 		self.prog = prog
@@ -75,9 +76,19 @@ class Interpreter:
 				sys.stderr.write(f'error: no main function\n')
 				return
 			else:
-				self.interpreter_node(self.functions['main'])
+				self.main_function()
+				#self.interpreter_node(self.functions['main'])
 		else:
 			sys.stderr.write(f'Can\'t intemperate this, incorrect syntax\n')
+			
+	def main_function(self):
+		self.scope += 1
+		self.symbol_table.append(dict())
+		statements = self.functions['main']
+		if statements is not None:
+			self.interpreter_node(statements)   
+		self.scope -= 1 
+		self.symbol_table.pop()
 
 	def interpreter_tree(self, tree):
 		print("Program tree:\n")
@@ -145,6 +156,10 @@ class Interpreter:
 			elif value == 'TRUE':
 				return Variable('BOOL', True, True)
 			else:
+				if value == 'UNDEF':	value = 0
+				elif value == 'WALL':	value = 1
+				elif value == 'EMPTY':	value = 2
+				elif value == 'EXIT':	value = 3
 				return Variable('CELL', value, True) #EMPTY/WALL/EXIT/UNDEF
 		elif node.type == 'expressions':
 			expressions = [] 
@@ -189,24 +204,28 @@ class Interpreter:
 			return [expr]	
 		elif node.type == 'condition':
 			condition = self.interpreter_node(node.children['condition'])
+			if isinstance(condition,list):
+				condition = condition[0]
 			if condition.type == 'CELL':
 				sys.stderr.write(f'error: cannot convert CELL to BOOL to check a condition\n')
 				return
 			if condition.dim != 0:
 				sys.stderr.write(f'error: array cannot be condition\n')
 				return
-			if condition.value is True:
+			if bool(condition.value) is True:
 				self.interpreter_node(node.children['body'])
 		elif node.type == 'while':
 			while True:
 				condition = self.interpreter_node(node.children['condition'])
+				if isinstance(condition,list):
+					condition = condition[0]
 				if condition.type == 'CELL':
 					sys.stderr.write(f'error: cannot convert CELL to BOOL to check a condition\n')
 					return
 				if condition.dim != 0:
 					sys.stderr.write(f'error: array cannot be condition\n')
 					return
-				if condition.value is True:
+				if bool(condition.value) is True:
 					self.interpreter_node(node.children['body'])
 				else:
 					break
@@ -231,6 +250,34 @@ class Interpreter:
 				return self.logic_and(node.children)
 			elif node.value == '<NOT>':
 				return self.logic_not(node.children)
+		elif node.type == 'operator': #проверять expression на немассивность и на не CELL
+			if node.value == '<LEFT>':
+				n=self.interpreter_node(node.children)
+				self.robot.left(int(n.value))
+			elif node.value == '<RIGHT>':
+				n=self.interpreter_node(node.children)
+				self.robot.right(int(n.value))
+			elif node.value == '<UP>':
+				n=self.interpreter_node(node.children)
+				self.robot.up(int(n.value))
+			elif node.value == '<DOWN>':
+				n=self.interpreter_node(node.children)
+				self.robot.down(int(n.value))
+			elif node.value == '<GETDRONSCOUNT>':
+				var = self.interpreter_node(node.children)
+				if isinstance(var,list):
+					var = var[0]
+				if var.dim !=0 or var.type != 'INT':
+					sys.stderr.write(f'error: GETDRONSCOUNT returns INT type not-array variable\n')
+					return
+				var.value=self.robot.drons #проверить на константность
+		elif node.type == 'senddrons': #проверять expression на немассивность и на не CELL
+			n=self.interpreter_node(node.children)
+			array=self.robot.send_drons(int(n.value))
+			cells = []
+			for value in array:
+				cells.append(Variable('CELL', value, True))
+			return Variable('CELL', cells, True, 2, [11,11])
 				
 	def assignment(self, node: parser.SyntaxTreeNode): 
 		variables = self.interpreter_node(node.children[1])
@@ -343,7 +390,10 @@ class Interpreter:
 		if dimensions is None or len(dimensions) != dim:
 			sys.stderr.write(f'error: DIMENSIONS count shoul be equal to number of DIMENSION blocks\n')
 			return
-		self.symbol_table[self.scope][name] = Variable(vartype, [Variable(vartype, None, flag)], flag, dim, dimensions)
+		size=1
+		for i in dimensions:
+			size*=i
+		self.symbol_table[self.scope][name] = Variable(vartype, [Variable(vartype, None, flag)]*size, flag, dim, dimensions)
 		
 	def array_initialization(self, node: parser.SyntaxTreeNode, flag: bool):
 		vartype = node.value.value
@@ -516,6 +566,7 @@ class Interpreter:
 			sys.stderr.write(f'error: recursion\n')
 			return
 		funcname = node.value.value
+		print(f'{funcname}\n')
 		if funcname not in self.functions.keys():
 			sys.stderr.write(f'error: call of undeclarated function\n')
 			return
@@ -525,16 +576,20 @@ class Interpreter:
 		if statements is not None:
 			self.interpreter_node(statements)   
 		self.scope -= 1 #хз
+		interpreter.print_symbol()
 		self.symbol_table.pop()
 		
 	def print_symbol(self):
 		print(self.symbol_table)
 		
 if __name__ == '__main__':
-	interpreter = Interpreter()
-	f=open('test(sorting)','r')
+	mapp=open('map','r')
+	interpreter = Interpreter(mapp)
+	interpreter.robot.show_map()
+	f=open('test(arrays)','r')
 	interpreter.interpreter(f.read())
 	f.close()
+	print(f'life status: {interpreter.robot.life}')
 	interpreter.print_symbol()
 	
 						
